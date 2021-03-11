@@ -1,2 +1,4 @@
 venv/*
 secretkey
+sample0/sample0/__pycache__/*
+sample0/frontend/__pycache__/*
