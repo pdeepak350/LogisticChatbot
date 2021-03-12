@@ -39,7 +39,28 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'chatterbot.ext.django_chatterbot',
+    'botmain',
 ]
+
+CHATTERBOT = {
+    'name': 'Chatbot',
+    'django_app_name': 'django_chatterbot',
+    'logic_adapters': [
+        'chatterbot.logic.BestMatch',
+         {
+            'import_path': 'chatterbot.logic.BestMatch'
+        },
+        {
+            'import_path': 'chatterbot.logic.SpecificResponseAdapter',
+            'input_text': 'Help me!',
+            'output_text': 'Ok, here is a link: http://chatterbot.rtfd.org'
+        }
+        
+    ]
+    
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
