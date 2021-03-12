@@ -12,4 +12,7 @@ def industries(request):
 
 def contact(request):
     return render (request, 'contact.html')
+
+def widget(request):
+    return render(request, 'widget.html')
     
