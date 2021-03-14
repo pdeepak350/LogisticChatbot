@@ -106,7 +106,7 @@ $('.chat-input__form').on('submit', function (e) {
     e.preventDefault();
   msg = $('.chat-input__text').val();
   
-  $('.chat-logs').append('<div id="cm-msg-0" class="chat-msg background-warning push-right bot"><div class="cm-msg-text">' + msg + '</div><span class="msg-avatar"><img class="chat-box-overlay_robot" src="https://www.meetsource.com//userStyles/images/user.png"></span></div>');  
+  $('.chat-logs').append('<div id="cm-msg-0" class="chat-msg background-warning push-right bot"><div class="cm-msg-text">' + msg );  
   $('.chat-input__text').val('');
 });
 
@@ -129,3 +129,4 @@ $(document).ready(controller.init);
         document.getElementById("chatLog").innerHTML += "I don't understand...<br>";
       }
     } 
+//+ '</div><span class="msg-avatar"><img class="chat-box-overlay_robot" src="https://www.meetsource.com//userStyles/images/user.png"></span></div>'

@@ -129,6 +129,8 @@ body {
 
 .chat-circle_robot {
     height: 50px;
+    display:block;
+    margin: auto;
 }
 
 
@@ -185,8 +187,8 @@ body {
 
 .chat-box-welcome_robot {
     height: 75px;
-    position: absolute;
-    top: 12px;
+    display:block;
+    margin:auto;
 }
 
 .chat-box-welcome__welcome-text {
@@ -268,10 +270,10 @@ body {
 .chat-input__text {
     background: #fff;
     width: 95%;
-    position: relative;
     height: 47px;
+    display:block;
+    margin:auto;
     padding-top: 10px;
-    padding-right: 50px;
     padding-bottom: 10px;
     padding-left: 15px;
     margin-top: 5px;
