@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head%}
+{% block title %}Login{% endblock title %}
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+  <a class="navbar-brand" href="#">SoftWarehouse</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('home') }}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a href="{{url_for('allproduct')}}" class="nav-link">Product</a>
+      </li>
+      <li class="nav-item">
+        <a href="{{url_for('getCart')}}" class="nav-link"> Cart ({{ session['Shoppingcart']|length }}) </a>
+      </li>
+      <li class="nav-item active">
+        {% if 'email' in session %}
+        <a href="{{url_for('logout')}}" class="nav-link">Logout</a>
+        {% else %}
+        <a href="{{url_for('login')}}" class="nav-link">Login</a>
+        {% endif %}
+      </li>
+      {% if session['email']=="admin@admin.com" %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Manage
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{{url_for('admin')}}">Product</a>
+          <a class="dropdown-item" href="{{url_for('brands')}}">Brand</a>
+          <a class="dropdown-item" href="{{url_for('categories')}}">Category</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Add
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{{url_for('addproduct')}}">Product</a>
+          <a class="dropdown-item" href="{{url_for('addbrand')}}">Brand</a>
+          <a class="dropdown-item" href="{{url_for('addcat')}}">Category</a>
+        </div>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+{% endblock nav %}
+{% block content %}
+<!-- included to show flash messages -->
+{% include "_message.html" %}
+{% from "_formhelpers.html" import render_field %}
+<div class="row">
+	<div class="col-md-4"></div>
+	<div class="col-md-4">
+		<p style="color:blue;font-size:20px;"><i>Login Form</i></p>
+		<form method="post">
+			<div>
+				{{ render_field(form.email, class="form-control") }}
+				{{ render_field(form.password, class="form-control") }}
+			</div>
+			<p><input type="submit" value="Sign In" class="btn btn-info mt-2"></p>
+		</form>
+		<p>Does not have an accout?<a href="{{url_for('SignUp')}}">Sign Up</a></p>
+	</div>
+</div>
+<!-- used to have space from footer-->
+<div class="container mt-5 mb-5">
+  <div class="row">
+    <div class="col-md-12 mt-5 mb-5"></div>
+  </div>
+</div>
+{% endblock content%}

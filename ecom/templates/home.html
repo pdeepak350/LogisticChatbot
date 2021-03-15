@@ -1,0 +1,140 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head%}
+{% block title %}Home{% endblock title %}
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+  <a class="navbar-brand" href="#">SoftWarehouse</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="{{ url_for('home') }}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a href="{{url_for('allproduct')}}" class="nav-link">Product</a>
+      </li>
+      <li class="nav-item">
+        <a href="{{url_for('getCart')}}" class="nav-link"> Cart ({{ session['Shoppingcart']|length }}) </a>
+      </li>
+      <li class="nav-item">
+        <!-- Shows Login if user is not loggedIn in system otherwise shows logout text on navbar-->
+        {% if 'email' in session %}
+        <a href="{{url_for('logout')}}" class="nav-link">Logout</a>
+        {% else %}
+        <a href="{{url_for('login')}}" class="nav-link">Login</a>
+        {% endif %}
+      </li>
+      <!-- only admin can see this links from here -->
+      {% if session['email']=="admin@admin.com" %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Manage
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{{url_for('admin')}}">Product</a>
+          <a class="dropdown-item" href="{{url_for('brands')}}">Brand</a>
+          <a class="dropdown-item" href="{{url_for('categories')}}">Category</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Add
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{{url_for('addproduct')}}">Product</a>
+          <a class="dropdown-item" href="{{url_for('addbrand')}}">Brand</a>
+          <a class="dropdown-item" href="{{url_for('addcat')}}">Category</a>
+        </div>
+      </li>
+      {% endif %}
+      <!-- to here -->
+    </ul>
+  </div>
+</nav>
+{% endblock nav %}
+{% block content %}
+
+<div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+  <ol class="carousel-indicators">
+    <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+    <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+    <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+  </ol>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{{url_for('static',filename='banner/gallery1.jpg')}}" class="d-block w-100" alt="..." height="360">
+      <div class="carousel-caption d-none d-md-block">
+        <!-- Change the text as per you want -->
+        <h5>First slide label</h5>
+        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{{url_for('static',filename='banner/gallery2.jpg')}}" class="d-block w-100" alt="..." height="360">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Second slide label</h5>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{{url_for('static',filename='banner/gallery4.jpg')}}" class="d-block w-100" alt="..." height="360">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Third slide label</h5>
+        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+      </div>
+    </div>
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+
+<div class="container">
+  <div class="container mt-2 float-left">
+  	<h5><i>New Items</i></h5>
+  </div> 
+  <div class="row">
+    {% for product in products %}
+    <div class="col-md-3 mt-3">
+      <img src="{{url_for('static',filename='img/'+product.image1)}}" alt="{{product.name}}" class="card-img-top"
+        height="180">
+      <div class="card-body">
+        {% if product.discount>0 %}
+        <h5 style="text-shadow; 1px 2px 2px #000000; color:blue; transform: rotate(-15deg); position:absolute; top:10%; left:20px;"> Discount: {{product.discount}}%</h5>
+        {% endif %}
+        <h5 class="text-center">{{product.name}}</h5>
+        <p class="text-center">{{product.price}}</p>
+      </div>
+      <div class="card-footer">
+        <a href="{{url_for('single',id=product.id)}}" class="float-left btn btn-sm btn-info">View Detail</a>
+        <form action="{{url_for('AddCart')}}" method="post">
+                <input type="hidden" name="product_id" value="{{product.id}}">
+                <button type="submit" class="btn btn-warning btn-sm float-right">Add to Cart</button>
+                <input type="hidden" name="quantity" value="1" min="1" max="{{product.stock}}">
+                {% set colors = product.color.split(',') %}
+                <select name="colors" id="colors" style="visibility: hidden;">
+                    {% for color in colors %}
+                    {% set col = color.split(':') %}
+                    <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                    {% endfor %}
+                </select>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="container float-right mt-3 mb-4">
+	<a href="{{url_for('allproduct')}}" class="float-right btn btn-sm btn-outline-info">See All Products ></a>
+  </div>
+</div>
+
+{% endblock content%}

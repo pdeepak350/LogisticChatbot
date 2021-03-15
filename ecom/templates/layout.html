@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  {% block head %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
+  {% endblock head %}
+  <title>{% block title %}{% endblock %}</title>
+  <!-- Styling for foooter -->
+  <style>
+    footer { 
+    background: #696969; 
+    clear: both;
+    color: #FFFFFF;
+    border-top: 1px solid black;
+    padding-bottom: 0;
+    }
+  </style>
+</head>
+
+<body>
+  {% block nav %}{% endblock nav %}
+  {% block content %}{% endblock content %}
+<!-- Footer -->
+<footer class="page-footer font-small unique-color-dark">
+  <div class="container text-center text-md-left mt-5">
+    <div class="row mt-5">
+      <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+        <h6 class="text-uppercase font-weight-bold">SoftWarehouse</h6>
+        <hr class="deep-purple accent-2 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
+        <p>We are here to make your shopping easier...</p>
+      </div>
+      <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+        <h6 class="text-uppercase font-weight-bold">Useful links</h6>
+        <hr class="deep-purple accent-2 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
+        <p>
+          <!-- Add your links here in place of #! -->
+          <a href="#!">About Us</a>
+        </p>
+        <p>
+          <a href="#!">Events</a>
+        </p>
+        <p>
+          <a href="#!">Contact Us</a>
+        </p>
+        <p>
+          <a href="#!">Help</a>
+        </p>
+      </div>
+      <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+        <h6 class="text-uppercase font-weight-bold">Contact</h6>
+        <hr class="deep-purple accent-2 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
+        <p>
+          <i class="fas fa-home mr-3"></i> Bahawalpur , PK 10012, Pakistan</p>
+        <p>
+          <i class="fas fa-envelope mr-3"></i> info@example.com</p>
+        <p>
+          <i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
+        <p>
+          <i class="fas fa-print mr-3"></i> + 01 234 567 89</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright text-center py-3">&copy 2020 Copyright:
+    <a href="#/"> SoftWarehouse</a>
+  </div>
+</footer>
+<!-- Footer -->
+  <!-- javascript files -->
+  <script src="{{ url_for('static', filename='js/jquery-3.4.1.slim.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</body>
+
+</html>
