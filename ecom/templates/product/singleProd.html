@@ -137,7 +137,8 @@
         <h1>Product Details Page</h1>
         <nav class="d-flex align-items-center">
           <a href="{{ url_for('home') }}">Home<span class="lnr lnr-arrow-right"></span></a>
-          <a href="{{url_for('allproduct')}}">Products<span class="lnr"></span></a>
+          <a href="{{url_for('allproduct')}}">Products<span class="lnr lnr-arrow-right"></span></a>
+          <a href="{{url_for('single',id=product.id)}}">Product-Details<span class="lnr"></span></a>
         </nav>
       </div>
     </div>
