@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_uploads import IMAGES,UploadSet,configure_uploads,patch_request_class
 from flask_login import LoginManager
+from flask_ngrok import run_with_ngrok
 import os
 basedir=os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -27,3 +28,5 @@ login_manager.login_message_category = "info"
 from ecom.admin import routes
 from ecom.products import routes
 from ecom.cart import carts
+
+run_with_ngrok(app)
