@@ -1,16 +1,16 @@
 import smtplib
 
-def sendEmail( mailto, doctor, date, time, name, report ):
+def sendEmail( mailto, date, time, name, report ):
     gmailaddress = "EMAIL_ID"
     gmailpassword = "PASSWORD"
     
-    sub = "Confirmed: Doctor Appointment Booked"
+    sub = "Successful login"
     if (len(report) == 0): report = "Checkup"
-    msag = "Hey " + name + ",\n\nYour Appointment has been Successfully Booked with Dr." + doctor + "\n\nDate : " + date + "\nTime : " + time + "\nProblem : " + report + "\n\nThank you for using Doctor Chatbot."
+    msag = "Hey " + name + ",\n\nYour survey is sucessfully completed" + doctor + "\n\nDate : " + date + "\nTime : " + time + "\nProblem : " + report + "\n\nThank you for using Logistic Chatbot."
     msg = 'Subject: {}\n\n{}'.format(sub, msag)
     
-    sub2 = "Appointment Booked with Doctor "+ doctor + " on "+ date
-    msag2 = "Patient Email: "+ mailto + "\n\nReport: " + report
+    sub2 = "Survey done on "+ date
+    msag2 = "User Email: "+ mailto + "\n\nReport: " + report
     msg2 = 'Subject: {}\n\n{}'.format(sub2, msag2)
     
     mailServer = smtplib.SMTP('smtp.gmail.com' , 587)
