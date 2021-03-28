@@ -4,7 +4,7 @@ from sklearn import svm
 #from sklearn import metrics
 #import csv
 
-def svm_pred(age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal):
+def svm_pred(InvoiceNo, StockCode, Quantity, InvoiceDate,UnitPrice, CustomerID):
     data = pd.read_csv("heart.csv")
     
     train = data.drop('target', axis = 1)
@@ -31,7 +31,8 @@ def svm_pred(age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak
     '''
     with open("heart.csv","a") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow([age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal, result])
+        writer.writerow([InvoiceNo, StockCode, Quantity, InvoiceDate,UnitPrice, CustomerID])
     '''
     return result
     
+
