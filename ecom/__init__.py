@@ -29,4 +29,4 @@ from ecom.admin import routes
 from ecom.products import routes
 from ecom.cart import carts
 
-run_with_ngrok(app)
+# run_with_ngrok(app)
