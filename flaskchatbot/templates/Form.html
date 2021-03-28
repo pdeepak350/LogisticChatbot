@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+    body {font-family: Arial, Helvetica, sans-serif; box-sizing: border-box;}
+
+    /* Full-width input fields */
+    input[type=text], select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    }
+
+    label {
+    padding: 12px 12px 12px 0;
+    display: inline-block;
+    }
+
+    /* Set a style for all buttons */
+    button {
+    background-color: #ff0000;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 58%;
+    }
+    button:hover {
+    opacity: 0.8;
+    }
+
+    /* Extra styles for the cancel button */
+    .cancelbtn {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+    }
+
+    /* Center the image and position the close button */
+    .imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+    position: relative;
+    }
+
+    .container {
+    padding: 16px;
+    }
+
+    span.psw {
+    float: right;
+    padding-top: 16px;
+    }
+
+    /* The Modal (background) */
+    .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 5px;
+    }
+
+    /* Modal Content/Box */
+    .modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    border: 1px solid #888;
+    width: 60%; /* Could be more or less, depending on screen size */
+    }
+
+    /* The Close Button (x) */
+    .close {
+    position: absolute;
+    right: 25px;
+    top: 0;
+    color: #000;
+    font-size: 35px;
+    font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+    color: red;
+    cursor: pointer;
+    }
+
+    /* Add Zoom Animation */
+    .animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+    }
+    @-webkit-keyframes animatezoom {
+    from {-webkit-transform: scale(0)}
+    to {-webkit-transform: scale(1)}
+    }
+    
+    @keyframes animatezoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+    }
+
+    /* Change styles for span and cancel button on extra small screens */
+    @media screen and (max-width: 300px) {
+    span.psw {
+    display: block;
+    float: none;
+    }
+
+    .cancelbtn {
+    width: 100%;
+    }
+    }
+
+    /* ToolTip */
+    .tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 320px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+</style>
+</head>
+
+<body style="background-image: url('{{ url_for('static', filename='h.png' ) }}'); background-repeat: no-repeat; background-attachment: fixed;
+  background-size: cover;">
+    <div style="text-align: center;">
+       <h2 style="padding-top: 250px; padding-right: 4%">Click Here to get Form</h2>
+      <button onclick="document.getElementById('id01').style.display='block'" style="width:auto; position: absolute; top: 45%; right: 48%; border: 2px solid #000000; box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);">Report Form</button>
+    </div>
+
+    <div id="id01" class="modal">  
+      <form class="modal-content animate" name="passdata" action="." method="post">
+        <div class="imgcontainer">
+          <h2> Report </h2>
+          <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+        </div>
+
+        <div class="container">
+        <!--
+          <label for="age">Age</label>
+          <input type="text" style="width: 96%" id="Age" name="age" placeholder="Enter Your Age.." required> <br>
+          
+          <label for="gender">Gender</label>
+          <select id="gender" name="sex">
+            <option value="" disabled selected>Select Your Gender ..</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select> <br>
+          -->
+          <label for="rbp">Invoice Number</label>
+          <div class="tooltip">(info)
+            <span class="tooltiptext">PPlease input your invoice number here</span>
+          </div>
+          <input type="text" style="width: 96%" id="Age" name="trestbps" placeholder="invoicenumber" required> <br>
+
+          <label for="rbp">Stock Code</label>
+          <div class="tooltip">(info)
+            <span class="tooltiptext">PPlease input your Stock code here</span>
+          </div>
+          <input type="text" style="width: 96%" id="Age" name="trestbps" placeholder="stockcode" required> <br>
+
+          <label for="rbp">Quantity</label>
+          <div class="tooltip">(info)
+            <span class="tooltiptext">PPlease input the Quantity of your product here</span>
+          </div>
+          <input type="text" style="width: 96%" id="Age" name="trestbps" placeholder="quantity" required> <br>
+
+          <label for="rbp">Unit place</label>
+          <div class="tooltip">(info)
+            <span class="tooltiptext">PPlease input your Unit here</span>
+          </div>
+          <input type="text" style="width: 96%" id="Age" name="trestbps" placeholder="unit" required> <br>
+
+          <label for="rbp">Customer ID</label>
+          <div class="tooltip">(info)
+            <span class="tooltiptext">PPlease input your Customer ID here</span>
+          </div>
+          <input type="text" style="width: 96%" id="Age" name="trestbps" placeholder="customerid" required> <br>
+
+          
+          
+          <button type="submit" style="width: 100%">Submit Report</button>
+        </div>
+        <div class="container" style="background-color:#f1f1f1">
+          <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+    <script>
+    // Get the modal
+    var modal = document.getElementById('id01');
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+    if (event.target == modal) {
+    modal.style.display = "none";
+    }
+    }
+    </script>
+  </body>
+</html>
