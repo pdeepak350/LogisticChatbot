@@ -5,7 +5,7 @@ from sklearn import svm
 #import csv
 
 def svm_pred(InvoiceNo, StockCode, Quantity, InvoiceDate,UnitPrice, CustomerID):
-    data = pd.read_csv("heart.csv")
+    data = pd.read_csv("database.csv")
     
     train = data.drop('target', axis = 1)
     target = data.target
@@ -29,7 +29,7 @@ def svm_pred(InvoiceNo, StockCode, Quantity, InvoiceDate,UnitPrice, CustomerID):
     # Output Extected: 1,0  [52,1,0,128,255,0,1,161,1,0,2,1,3]
     result = clf.predict(NewData)[1]
     '''
-    with open("heart.csv","a") as csvfile:
+    with open("database.csv","a") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow([InvoiceNo, StockCode, Quantity, InvoiceDate,UnitPrice, CustomerID])
     '''
