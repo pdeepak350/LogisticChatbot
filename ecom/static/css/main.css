@@ -1052,7 +1052,7 @@ h1, h2, h3, h4, h5, h6 {
         .header_area .navbar .nav .nav-item .nav-link:after {
           display: none; }
       .header_area .navbar .nav .nav-item:hover .nav-link, .header_area .navbar .nav .nav-item.active .nav-link {
-        color: #ffba00; }
+        color: rgb(255, 136, 0) }
       .header_area .navbar .nav .nav-item.submenu {
         position: relative; }
         .header_area .navbar .nav .nav-item.submenu ul {
@@ -1119,7 +1119,7 @@ h1, h2, h3, h4, h5, h6 {
               border-bottom: none; }
             .header_area .navbar .nav .nav-item.submenu ul .nav-item:hover .nav-link {
               background: #ffba00;
-              color: #fff; }
+              color: rgb(255, 136, 0); }
         @media (min-width: 992px) {
           .header_area .navbar .nav .nav-item.submenu:hover ul {
             visibility: visible;
