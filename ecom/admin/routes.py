@@ -100,3 +100,7 @@ def SignUp():
             f'Welcome {form.username.data} Thanks for registering', 'success')
         return redirect(url_for('login'))
     return render_template('signup.html', form=form)
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html' )
