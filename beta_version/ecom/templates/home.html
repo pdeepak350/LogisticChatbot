@@ -1,0 +1,346 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head%}
+{% block title %}Home{% endblock title %}
+{% block nav %}
+
+<header class="header_area sticky-header">
+  <div class="main_menu">
+    <nav class="navbar navbar-expand-lg navbar-light main_box">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <a class="navbar-brand logo_h" href="{{ url_for('home') }}"><img src="{{url_for ('static', filename='img/fav.png') }}" alt=""></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+          <ul class="nav navbar-nav menu_nav ml-auto">
+            <li class="nav-item active"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+            <li class="nav-item submenu dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+               aria-expanded="false">Shop</a>
+              <ul class="dropdown-menu">
+                <li class="nav-item"><a href="{{url_for('allproduct')}}" class="nav-link">Shop</a></li>
+                <li class="nav-item"><a href="{{url_for('getCart')}}" class="nav-link"> Cart ({{ session['Shoppingcart']|length }}) </a></li>
+              </ul>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="{{url_for('contact')}}">Contact</a></li>
+            {% if session['email']=="admin@admin.com" %}
+            <li class="nav-item submenu dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Manage
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <li class="nav-item"><a class="nav-link" href="{{url_for('admin')}}">Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('brands')}}">Brand</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('categories')}}">Category</a></li>
+              </ul>
+            </li>
+            <li class="nav-item submenu dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Add
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <li class="nav-item"><a class="nav-link" href="{{url_for('addproduct')}}">Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('addbrand')}}">Brand</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('addcat')}}">Category</a></li>
+              </ul>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+              {% if 'email' in session %}
+              <a href="{{url_for('logout')}}" class="nav-link">Logout</a>
+              {% else %}
+              <a href="{{url_for('login')}}" class="nav-link">Login</a>
+              {% endif %}
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item"><a href="{{url_for('getCart')}}" class="cart"><span class="ti-bag"></span>({{ session['Shoppingcart']|length }})</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="search_input" id="search_input_box">
+    <div class="container">
+      <form class="d-flex justify-content-between">
+        <input type="text" class="form-control" id="search_input" placeholder="Search Here">
+        <button type="submit" class="btn"></button>
+        <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+      </form>
+    </div>
+  </div>
+</header>
+
+{% endblock nav %}
+{% block content %}
+
+<section class="banner-area">
+  <div class="container">
+    <div class="row fullscreen align-items-center justify-content-start">
+      <div class="col-lg-12">
+        <div class="active-banner-slider">
+          <!-- single-slide -->
+          <div class="row single-slide align-items-center d-flex">
+            <div class="col-lg-5 col-md-6">
+              <div class="banner-content">
+                <h1>Nike New <br>Collection!</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+                <div class="add-bag d-flex align-items-center">
+                  <a class="add-btn" href=""><span class="lnr lnr-cross"></span></a>
+                  <span class="add-text text-uppercase">Add to Bag</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="banner-img">
+                <img class="img-fluid" src="{{url_for('static',filename='img/banner/banner-img.png') }}" alt="">
+              </div>
+            </div>
+          </div>
+          <!-- single-slide -->
+          <div class="row single-slide">
+            <div class="col-lg-5">
+              <div class="banner-content">
+                <h1>Nike New <br>Collection!</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+                <div class="add-bag d-flex align-items-center">
+                  <a class="add-btn" href=""><span class="lnr lnr-cross"></span></a>
+                  <span class="add-text text-uppercase">Add to Bag</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="banner-img">
+                <img class="img-fluid" src="{{url_for('static',filename='img/banner/banner-img.png') }}" alt="">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--banner area end-->
+
+<section class="features-area section_gap">
+  <div class="container">
+    <div class="row features-inner">
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="{{url_for('static', filename='img/features/f-icon1.png') }}" alt="">
+          </div>
+          <h6>Free Delivery</h6>
+          <p>Free Shipping on all order</p>
+        </div>
+      </div>
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="{{url_for('static', filename='img/features/f-icon2.png') }}" alt="">
+          </div>
+          <h6>Return Policy</h6>
+          <p>Free Shipping on all order</p>
+        </div>
+      </div>
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="{{url_for('static', filename='img/features/f-icon3.png') }}" alt="">
+          </div>
+          <h6>24/7 Support</h6>
+          <p>Free Shipping on all order</p>
+        </div>
+      </div>
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="{{url_for('static', filename='img/features/f-icon4.png') }}" alt="">
+          </div>
+          <h6>Secure Payment</h6>
+          <p>Free Shipping on all order</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- end features area-->
+
+<section class="category-area">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-12">
+        <div class="row">
+          <div class="col-lg-8 col-md-8">
+            <div class="single-deal">
+              <div class="overlay"></div>
+              <img class="img-fluid w-100" src="{{url_for('static', filename='img/category/c1.jpg') }}" alt="">
+              <a href="{{url_for('static', filename='img/category/c1.jpg') }}" class="img-pop-up" target="_blank">
+                <div class="deal-details">
+                  <h6 class="deal-title">Sneaker for Sports</h6>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4">
+            <div class="single-deal">
+              <div class="overlay"></div>
+              <img class="img-fluid w-100" src="{{url_for('static', filename='img/category/c2.jpg') }}" alt="">
+              <a href="{{url_for('static', filename='img/category/c2.jpg') }}" class="img-pop-up" target="_blank">
+                <div class="deal-details">
+                  <h6 class="deal-title">Sneaker for Sports</h6>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4">
+            <div class="single-deal">
+              <div class="overlay"></div>
+              <img class="img-fluid w-100" src="{{url_for('static', filename='img/category/c3.jpg') }}" alt="">
+              <a href="{{url_for('static', filename='img/category/c3.jpg') }}" class="img-pop-up" target="_blank">
+                <div class="deal-details">
+                  <h6 class="deal-title">Product for Couple</h6>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-8 col-md-8">
+            <div class="single-deal">
+              <div class="overlay"></div>
+              <img class="img-fluid w-100" src="{{url_for('static', filename='img/category/c4.jpg') }}" alt="">
+              <a href="{{url_for('static', filename='img/category/c4.jpg') }}" class="img-pop-up" target="_blank">
+                <div class="deal-details">
+                  <h6 class="deal-title">Sneaker for Sports</h6>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="single-deal">
+          <div class="overlay"></div>
+          <img class="img-fluid w-100" src="{{url_for('static', filename='img/category/c5.jpg') }}" alt="">
+          <a href="{{url_for('static', filename='img/category/c5.jpg') }}" class="img-pop-up" target="_blank">
+            <div class="deal-details">
+              <h6 class="deal-title">Sneaker for Sports</h6>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+    <!-- single product slide -->
+        <div class="row justify-content-center">
+          <div class="col-lg-6 text-center">
+            <div class="section-title">
+              <h1>Our Products</h1>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore
+                magna aliqua.</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          {% for product in products %}
+          <!-- single product -->
+          <div class="col-lg-3 col-md-6">
+            <div class="single-product">
+              <img class="card-img-top" src="{{url_for('static',filename='img/'+product.image1)}}" alt="{{product.name}}" height="180">
+              <div class="product-details">
+                <h6>{{product.name}}</h6>
+                <div class="price">
+                  <h6>{{product.price}}</h6>
+                </div>
+                <div class="prd-bottom">
+                  <a href="{{url_for('single',id=product.id)}}" class="social-info">
+                    <span class="lnr lnr-move"></span>
+                    <p class="hover-text">view more</p>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+  </div>
+
+  <section class="brand-area section_gap">
+		<div class="container">
+			<div class="row">
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="{{url_for('static', filename='img/brand/1.png') }}" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="{{url_for('static', filename='img/brand/2.png') }}" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="{{url_for('static', filename='img/brand/3.png') }}" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="{{url_for('static', filename='img/brand/4.png') }}" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="{{url_for('static', filename='img/brand/5.png') }}" alt="">
+				</a>
+			</div>
+		</div>
+	</section>
+
+<!-- <div class="container">
+  <div class="container mt-2 float-left">
+  	<h5><i>New Items</i></h5>
+  </div> 
+  <div class="row">
+    {% for product in products %}
+    <div class="col-md-3 mt-3">
+      <img src="{{url_for('static',filename='img/'+product.image1)}}" alt="{{product.name}}" class="card-img-top"
+        height="180">
+      <div class="card-body">
+        {% if product.discount>0 %}
+        <h5 style="text-shadow: 1px 2px 2px #000000; color:blue; transform: rotate(-15deg); position:absolute; top:10%; left:20px;"> Discount: {{product.discount}}%</h5>
+        {% endif %}
+        <h5 class="text-center">{{product.name}}</h5>
+        <p class="text-center">{{product.price}}</p>
+      </div>
+      <div class="card-footer">
+        <a href="{{url_for('single',id=product.id)}}" class="float-left btn btn-sm btn-info">View Detail</a>
+        <form action="{{url_for('AddCart')}}" method="post">
+                <input type="hidden" name="product_id" value="{{product.id}}">
+                <button type="submit" class="btn btn-warning btn-sm float-right">Add to Cart</button>
+                <input type="hidden" name="quantity" value="1" min="1" max="{{product.stock}}">
+                {% set colors = product.color.split(',') %}
+                <select name="colors" id="colors" style="visibility: hidden;">
+                    {% for color in colors %}
+                    {% set col = color.split(':') %}
+                    <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                    {% endfor %}
+                </select>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="container float-right mt-3 mb-4">
+	<a href="{{url_for('allproduct')}}" class="float-right btn btn-sm btn-outline-info">See All Products ></a>
+  </div>
+</div> -->
+
+{% endblock content%}

@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+<!-- Page to update products in the system -->
+{% block head %}
+{{ super() }}
+{% endblock head%}
+{% block title %}Update Product{% endblock title %}
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+  <a class="navbar-brand" href="#">SoftWarehouse</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('home') }}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a href="{{url_for('allproduct')}}" class="nav-link">Product</a>
+      </li>
+      <li class="nav-item">
+        <a href="{{url_for('getCart')}}" class="nav-link"> Cart ({{ session['Shoppingcart']|length }}) </a>
+      </li>
+      <li class="nav-item">
+        {% if 'email' in session %}
+        <a href="{{url_for('logout')}}" class="nav-link">Logout</a>
+        {% else %}
+        <a href="{{url_for('login')}}" class="nav-link">Login</a>
+        {% endif %}
+      </li>
+      {% if session['email']=="admin@admin.com" %}
+      <li class="nav-item dropdown active">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Manage
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{{url_for('admin')}}">Product</a>
+          <a class="dropdown-item" href="{{url_for('brands')}}">Brand</a>
+          <a class="dropdown-item" href="{{url_for('categories')}}">Category</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Add
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{{url_for('addproduct')}}">Product</a>
+          <a class="dropdown-item" href="{{url_for('addbrand')}}">Brand</a>
+          <a class="dropdown-item" href="{{url_for('addcat')}}">Category</a>
+        </div>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+{% endblock nav %}
+{% block content %}
+{% include "_message.html" %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-3"></div>
+		<div class="col-md-6">
+			<h4 class="text-center">Update a Product</h4>
+			{% from "_formhelpers.html" import render_field %}
+			<form action="" method="POST" enctype="multipart/form-data">
+				{{ render_field(form.name,class="form-control",placeholder="Product Name") }}
+				{{ render_field(form.price,class="form-control",placeholder="Product Price") }}
+				{{ render_field(form.discount,class="form-control",placeholder="Product Discount") }}
+				{{ render_field(form.stock,class="form-control",placeholder="Stock") }}
+				<label for="brand"><b>Brand</b></label>
+				<select name="brand" id="brand" class="form-control" required>
+					<option value="{{product.brand_id}}">{{product.brand.name}}</option>
+					{% for brand in brands%}
+					<option value="{{brand.id}}">{{brand.name}}</option>
+					{% endfor %}
+				</select>
+				<label for="category"><b>Category</b></label>
+				<select name="category" id="category" class="form-control" required>
+					<option value="{{product.category_id}}">{{product.category.name}}</option>
+					{% for cat in categories%}
+					<option value="{{cat.id}}">{{cat.name}}</option>
+					{% endfor %}
+				</select>
+				{{ render_field(form.color,class="form-control",placeholder="Product Colors") }}
+				{{ render_field(form.description,class="form-control",placeholder="Description",rows="10") }}
+				<div class="container">
+					<div class="row">
+						<div class="col-md-4">{{ render_field(form.image1,class="form-control") }}</div>
+						<div class="col-md-4">{{ render_field(form.image2,class="form-control") }}</div>
+						<div class="col-md-4">{{ render_field(form.image3,class="form-control") }}</div>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-outline-info mt-4">Update Product></button>
+			</form>
+		</div>
+		<div class="col-md-3">
+		</div>
+	</div>
+</div>
+{% endblock content%}

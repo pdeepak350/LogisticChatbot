@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head%}
+{% block title %}Login{% endblock title %}
+{% block nav %}
+<header class="header_area sticky-header">
+  <div class="main_menu">
+    <nav class="navbar navbar-expand-lg navbar-light main_box">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <a class="navbar-brand logo_h" href="{{ url_for('home') }}"><img src="{{url_for ('static', filename='img/fav.png') }}" alt=""></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+          <ul class="nav navbar-nav menu_nav ml-auto">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+            <li class="nav-item submenu dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+               aria-expanded="false">Shop</a>
+              <ul class="dropdown-menu">
+                <li class="nav-item"><a href="{{url_for('allproduct')}}" class="nav-link">Shop</a></li>
+                <li class="nav-item"><a href="{{url_for('getCart')}}" class="nav-link"> Cart ({{ session['Shoppingcart']|length }}) </a></li>
+              </ul>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+            {% if session['email']=="admin@admin.com" %}
+            <li class="nav-item submenu dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Manage
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <li class="nav-item"><a class="nav-link" href="{{url_for('admin')}}">Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('brands')}}">Brand</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('categories')}}">Category</a></li>
+              </ul>
+            </li>
+            <li class="nav-item submenu dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Add
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <li class="nav-item"><a class="nav-link" href="{{url_for('addproduct')}}">Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('addbrand')}}">Brand</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('addcat')}}">Category</a></li>
+              </ul>
+            </li>
+            {% endif %}
+            <li class="nav-item active">
+              {% if 'email' in session %}
+              <a href="{{url_for('logout')}}" class="nav-link">Logout</a>
+              {% else %}
+              <a href="{{url_for('login')}}" class="nav-link">Login</a>
+              {% endif %}
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item"><a href="{{url_for('getCart')}}" class="cart"><span class="ti-bag"></span>({{ session['Shoppingcart']|length }})</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="search_input" id="search_input_box">
+    <div class="container">
+      <form class="d-flex justify-content-between">
+        <input type="text" class="form-control" id="search_input" placeholder="Search Here">
+        <button type="submit" class="btn"></button>
+        <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+      </form>
+    </div>
+  </div>
+</header>
+{% endblock nav %}
+{% block content %}
+<!-- included to show flash messages -->
+
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+      <div class="col-first">
+        <h1>Login/Register</h1>
+        <nav class="d-flex align-items-center">
+          <a href="{{ url_for('home') }}">Home<span class="lnr lnr-arrow-right"></span></a>
+          <a href="{{url_for('login')}}">Login<span class="lnr"></span></a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "_message.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+<section class="login_box_area section_gap">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="login_box_img">
+          <img class="img-fluid" src="{{url_for('static', filename='img/login.jpg') }}" alt="">
+          <div class="hover">
+            <h4>New to our website?</h4>
+            <p>There are advances being made in science and technology everyday, and a good example of this is the</p>
+            <a class="primary-btn" href="{{url_for('SignUp')}}">Create an Account</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="login_form_inner">
+          <h3>Log in to enter</h3>
+          <form class="row login_form" method='post'>
+            <div class="col-md-12 form-group">
+              {{ render_field(form.email, class="form-control") }}
+            </div>
+            <div class="col-md-12 form-group">
+              {{ render_field(form.password, class="form-control") }}
+            </div>
+            <div class="col-md-12 form-group">
+              <button type="submit" value="Sign In" class="primary-btn">Log In</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <div class="row">
+	<div class="col-md-4"></div>
+	<div class="col-md-4">
+		<p style="color:blue;font-size:20px;"><i>Login Form</i></p>
+		<form method="post">
+			<div>
+				{{ render_field(form.email, class="form-control") }}
+				{{ render_field(form.password, class="form-control") }}
+			</div>
+			<p><input type="submit" value="Sign In" class="btn btn-info mt-2"></p>
+		</form>
+		<p>Does not have an accout?<a href="{{url_for('SignUp')}}">Sign Up</a></p>
+	</div>
+</div> -->
+<!-- used to have space from footer-->
+<div class="container mt-5 mb-5">
+  <div class="row">
+    <div class="col-md-12 mt-5 mb-5"></div>
+  </div>
+</div>
+{% endblock content%}
