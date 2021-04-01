@@ -1,8 +1,9 @@
 from flask import render_template, request, redirect, url_for, flash, session, current_app
 from flask_login import login_user,login_required,current_user,logout_user
-from .models import User, Brand, Category, Addproduct
+from .models import Cart, User, Brand, Category, Addproduct
 from .forms import RegistrationForm, LoginForm, Addproducts
 from ecom import app, db, bcrypt, login_manager, photos
+from sqlalchemy.sql import text
 import os
 
 # Route for user and admin to home page
@@ -323,101 +324,153 @@ def MagerDicts(dict1,dict2):
 # Route to add elements to the cart
 @app.route('/addcart', methods=['POST'])
 def AddCart():
-    try:
-        product_id = request.form.get('product_id')
-        quantity = int(request.form.get('quantity'))
-        color = request.form.get('colors')
-        product = Addproduct.query.filter_by(id=product_id).first()
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    else:
+        try:
+            user_id = session['_user_id']
+            product_id = request.form.get('product_id')
+            quantity = int(request.form.get('quantity'))
+            color = request.form.get('colors')
+            product = Addproduct.query.filter_by(id=product_id).first()
 
-        if request.method =="POST":
-            DictItems = {product_id:{'name':product.name,'price':float(product.price),'discount':product.discount,'color':color,'quantity':quantity,'image':product.image1, 'colors':product.color}}
-            if 'Shoppingcart' in session:
-                print(session['Shoppingcart'])
-                if product_id in session['Shoppingcart']:
-                    for key, item in session['Shoppingcart'].items():
-                        if int(key) == int(product_id):
-                            # Set session that if same product if added to cart twice then only quantity updates 
-                            # it will not update num in the cart(num) for same item added twice 
-                            session.modified = True
-                            item['quantity'] += 1
+            if request.method =="POST":
+            #if 'Shoppingcart' in session:
+                cart = Cart.query.filter_by(user_id=user_id, product_id=product_id, color=color).first()
+                if cart is None:
+                    addcart = Cart(user_id=user_id, product_id=product_id, color=color, quantity=quantity)
+                    db.session.add(addcart)
+                    db.session.commit()
+                    
                 else:
-                    session['Shoppingcart'] = MagerDicts(session['Shoppingcart'], DictItems)
-                    return redirect(request.referrer)
-            else:
-                session['Shoppingcart'] = DictItems
-                return redirect(request.referrer)
-        pass
-              
-    except Exception as e:
-        print(e)
-    finally:
-        return redirect(request.referrer)
+                    #if product_id in session['Shoppingcart']:
+                    cart = Cart.query.filter_by(user_id=user_id, product_id=product_id, color=color).first()
+                    cart_id = cart.id
+                    cart_color = cart.color
+                    ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=product_id, color=cart_color).first()
+                    ct.quantity = ct.quantity + quantity
+                    db.session.commit()
+            pass
+                  
+        except Exception as e:
+            print(e)
+        finally:
+            return redirect(request.referrer)
+            
+def Merge(dict1, dict2):
+    res = {**dict1, **dict2}
+    return res
 
 # Route for cart item display
 @app.route('/carts')
 def getCart():
-    # if no items in cart it will guide user to product page
-    if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
-        return redirect(url_for('allproduct'))
-    subtotal = 0
-    grandtotal = 0
-    # it will get the info. about all the items in the cart by iterating 
-    for key,product in session['Shoppingcart'].items():
-        discount = (product['discount']/100) * float(product['price'])
-        subtotal += float(product['price']) * int(product['quantity'])
-        subtotal -= discount
-        tax =("%.2f" %(.06 * float(subtotal)))
-        grandtotal = float("%.2f" % (1.06 * subtotal))
-    print(session['email'])
-    return render_template('product/carts.html',tax=tax, grandtotal=grandtotal)
+    #DictItems = {product_id:{'name':product.name,'price':float(product.price),'discount':product.discount,'color':color,'quantity':quantity,'image':product.image1, 'colors':product.color}}
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    else:
+        #if 'Shoppingcart' not in session:
+        #    return redirect(url_for('allproduct'))
+        cart_items={}
+        user_id = session['_user_id']
+        cart = Cart.query.order_by(text(user_id)).all()
+        for i in cart:
+            temp_cart={}
+            product=Addproduct.query.filter_by(id=i.product_id).first()
+            product_id=i.product_id
+            temp_cart = {product_id:{'name':product.name,'price':float(product.price),'discount':product.discount,'color':i.color,'quantity':i.quantity,'image':product.image1, 'colors':product.color}}
+            cart_items = Merge(cart_items, temp_cart)
+
+        #if no items in cart it will guide user to product page
+        subtotal = 0
+        grandtotal = 0
+        # it will get the info. about all the items in the cart by iterating
+        try:
+            for key,product in cart_items.items():
+                discount = (product['discount']/100) * float(product['price'])
+                subtotal += float(product['price']) * int(product['quantity'])
+                subtotal -= discount
+                tax =("%.2f" %(.06 * float(subtotal)))
+                grandtotal = float("%.2f" % (1.06 * subtotal))
+                # print(session['Shoppingcart'].items())  
+            return render_template('product/carts.html',tax=tax, grandtotal=grandtotal, cart_items=cart_items)
+        except Exception as e:
+            print(e)
+            flash(f'no items in cart', 'error')
+            return redirect(url_for('allproduct'))
 
 # Route to update cart
 # When any item in cart to be updated (only color and quantity can be updated )
 # The page returns id for that cart item for updatation
 @app.route('/updatecart/<int:code>', methods=['POST'])
 def updatecart(code):
-    if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
-        return redirect(url_for('home'))
-    if request.method =="POST":
-        quantity = request.form.get('quantity')
-        color = request.form.get('color')
-        try:
-            session.modified = True
-            for key , item in session['Shoppingcart'].items():
-                if int(key) == code:
-                    item['quantity'] = quantity
-                    item['color'] = color
-                    flash('Item is updated!','success')
-                    return redirect(url_for('getCart'))
-        except Exception as e:
-            print(e)
-            return redirect(url_for('getCart'))
+    cart_items={}
+    user_id = session['_user_id']
+    cart = Cart.query.order_by(text(user_id)).all()
+    for i in cart:
+        temp_cart={}
+        cart_id = i.id
+        product=Addproduct.query.filter_by(id=i.product_id).first()
+        product_id=i.product_id
+        temp_cart = {product_id:{'name':product.name,'price':float(product.price),'discount':product.discount,'color':i.color,'quantity':i.quantity,'image':product.image1, 'colors':product.color}}
+        cart_items = Merge(cart_items, temp_cart)
+        if request.method =="POST":
+            quantity = request.form.get('quantity')
+            color = request.form.get('color')
+            try:
+                for key , item in cart_items.items():
+                    if int(key) == code:
+                        ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=product_id).first()
+                        ct.quantity = quantity
+                        ct.color = color
+                        db.session.commit()
+                        flash('Item is updated!','success')
+                        return redirect(url_for('getCart'))
+            except Exception as e:
+                print(e)
+                flash('updated cart', 'success')
+                return redirect(url_for('getCart'))
 
 # Route to delete cart items
 # Page will return id of cart element to be deleted
 @app.route('/deleteitem/<int:id>')
 def deleteitem(id):
-    if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
-        return redirect(url_for('home'))
-    try:
-        session.modified = True
-        for key , item in session['Shoppingcart'].items():
-            if int(key) == id:
-                session['Shoppingcart'].pop(key, None)
-                return redirect(url_for('getCart'))
-    except Exception as e:
-        print(e)
-        return redirect(url_for('getCart'))
+    cart_items={}
+    user_id = session['_user_id']
+    cart = Cart.query.order_by(text(user_id)).all()
+    for i in cart:
+        temp_cart={}
+        product=Addproduct.query.filter_by(id=i.product_id).first()
+        product_id=i.product_id
+        temp_cart = {product_id:{'name':product.name,'price':float(product.price),'discount':product.discount,'color':i.color,'quantity':i.quantity,'image':product.image1, 'colors':product.color}}
+        cart_items = Merge(cart_items, temp_cart)
+        try:
+            for key , item in cart_items.items():
+                if int(key) == id:
+                    cart = Cart.query.filter_by(user_id=user_id, product_id=product_id).first()
+                    db.session.delete(cart)
+                    db.session.commit()
+                    return redirect(url_for('getCart'))
+        except Exception as e:
+            print(e)
+            flash(f'deleted item', 'success')
+            return redirect(url_for('getCart'))
 
 # Route to clear cart
 @app.route('/clearcart')
 def clearcart():
+    user_id = session['_user_id']
+    cart = Cart.query.order_by(text(user_id)).all()
     try:
-        # Pops out the session and makes the cart empty
-        session.pop('Shoppingcart', None)
-        return redirect(url_for('home'))
+        for i in cart:
+            db.session.delete(i)
+            db.session.commit()
+            flash(f'cart cleared', 'success')
+            return redirect(url_for('allproduct'))
     except Exception as e:
         print(e)
+        flash(f'deleted items', 'success')
+        return redirect(url_for('allproduct'))
+
 
 # Route to checkout
 @app.route('/checkout')

@@ -110,7 +110,7 @@
                 <th>Remove</th>
             </thead>
             <tbody>
-                {% for key, product in session['Shoppingcart'].items() %}
+                {% for key, product in cart_items.items() %}
                 {% set discount =(product.discount/100) * product.price|float %}
                 <tr>
                     <td>{{loop.index}}</td>
