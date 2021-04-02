@@ -332,7 +332,6 @@ def AddCart():
             product_id = request.form.get('product_id')
             quantity = int(request.form.get('quantity'))
             color = request.form.get('colors')
-            product = Addproduct.query.filter_by(id=product_id).first()
 
             if request.method =="POST":
             #if 'Shoppingcart' in session:
@@ -376,23 +375,25 @@ def getCart():
         for i in cart:
             temp_cart={}
             product=Addproduct.query.filter_by(id=i.product_id).first()
-            product_id=i.product_id
-            temp_cart = {product_id:{'name':product.name,'price':float(product.price),'discount':product.discount,'color':i.color,'quantity':i.quantity,'image':product.image1, 'colors':product.color}}
+            id = str(i.product_id) + '_' + str(i.id)
+            temp_cart = {id:{'id':i.id, 'name':product.name,'price':float(product.price),'discount':product.discount,'color':i.color,'quantity':i.quantity,'image':product.image1, 'colors':product.color}}
             cart_items = Merge(cart_items, temp_cart)
 
         #if no items in cart it will guide user to product page
+        print(cart_items)
         subtotal = 0
         grandtotal = 0
         # it will get the info. about all the items in the cart by iterating
         try:
             for key,product in cart_items.items():
+                product_id = int(key.split('_')[0])
                 discount = (product['discount']/100) * float(product['price'])
                 subtotal += float(product['price']) * int(product['quantity'])
                 subtotal -= discount
                 tax =("%.2f" %(.06 * float(subtotal)))
                 grandtotal = float("%.2f" % (1.06 * subtotal))
                 # print(session['Shoppingcart'].items())  
-            return render_template('product/carts.html',tax=tax, grandtotal=grandtotal, cart_items=cart_items)
+            return render_template('product/carts.html',tax=tax, grandtotal=grandtotal, cart_items=cart_items, product_id=product_id)
         except Exception as e:
             print(e)
             flash(f'no items in cart', 'error')
@@ -401,71 +402,49 @@ def getCart():
 # Route to update cart
 # When any item in cart to be updated (only color and quantity can be updated )
 # The page returns id for that cart item for updatation
-@app.route('/updatecart/<int:code>', methods=['POST'])
+@app.route('/updatecart/<int:code>', methods=['GET', 'POST'])
 def updatecart(code):
-    cart_items={}
-    user_id = session['_user_id']
-    cart = Cart.query.order_by(text(user_id)).all()
-    for i in cart:
-        temp_cart={}
-        cart_id = i.id
-        product=Addproduct.query.filter_by(id=i.product_id).first()
-        product_id=i.product_id
-        temp_cart = {product_id:{'name':product.name,'price':float(product.price),'discount':product.discount,'color':i.color,'quantity':i.quantity,'image':product.image1, 'colors':product.color}}
-        cart_items = Merge(cart_items, temp_cart)
-        if request.method =="POST":
-            quantity = request.form.get('quantity')
-            color = request.form.get('color')
-            try:
-                for key , item in cart_items.items():
-                    if int(key) == code:
-                        ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=product_id).first()
-                        ct.quantity = quantity
-                        ct.color = color
-                        db.session.commit()
-                        flash('Item is updated!','success')
-                        return redirect(url_for('getCart'))
-            except Exception as e:
-                print(e)
-                flash('updated cart', 'success')
-                return redirect(url_for('getCart'))
+    if request.method =="POST":
+        quantity = request.form.get('quantity')
+        color = request.form.get('color')
+        cart = Cart.query.filter_by(id=code).first()
+        try:
+            cart.quantity = quantity
+            cart.color = color
+            db.session.commit()
+            flash('Item is updated!','success')
+            return redirect(url_for('getCart'))
+        except Exception as e:
+            print(e)
+            flash('updated cart', 'success')
+            return redirect(url_for('getCart'))
 
 # Route to delete cart items
 # Page will return id of cart element to be deleted
-@app.route('/deleteitem/<int:id>')
+@app.route('/deleteitem/<int:id>', methods=['GET', 'POST'])
 def deleteitem(id):
-    cart_items={}
-    user_id = session['_user_id']
-    cart = Cart.query.order_by(text(user_id)).all()
-    for i in cart:
-        temp_cart={}
-        product=Addproduct.query.filter_by(id=i.product_id).first()
-        product_id=i.product_id
-        temp_cart = {product_id:{'name':product.name,'price':float(product.price),'discount':product.discount,'color':i.color,'quantity':i.quantity,'image':product.image1, 'colors':product.color}}
-        cart_items = Merge(cart_items, temp_cart)
+    if request.method=="POST":
+        cart = Cart.query.filter_by(id=id).first()
         try:
-            for key , item in cart_items.items():
-                if int(key) == id:
-                    cart = Cart.query.filter_by(user_id=user_id, product_id=product_id).first()
-                    db.session.delete(cart)
-                    db.session.commit()
-                    return redirect(url_for('getCart'))
+            db.session.delete(cart)
+            db.session.commit()
+            flash(f'deleted item', 'success')
+            return redirect(url_for('getCart'))
         except Exception as e:
             print(e)
-            flash(f'deleted item', 'success')
             return redirect(url_for('getCart'))
 
 # Route to clear cart
 @app.route('/clearcart')
 def clearcart():
-    user_id = session['_user_id']
-    cart = Cart.query.order_by(text(user_id)).all()
     try:
+        user_id = session['_user_id']
+        cart = Cart.query.order_by(text(user_id)).all()
         for i in cart:
             db.session.delete(i)
             db.session.commit()
-            flash(f'cart cleared', 'success')
-            return redirect(url_for('allproduct'))
+        flash(f'cart cleared', 'success')
+        return redirect(url_for('allproduct'))
     except Exception as e:
         print(e)
         flash(f'deleted items', 'success')

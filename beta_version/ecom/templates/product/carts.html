@@ -116,7 +116,7 @@
                     <td>{{loop.index}}</td>
                     <td><img src="{{url_for('static',filename='img/'+ product.image)}}" alt="{{product.name}}" width="50" height="45"></td>
                     <td>{{product.name}}</td>
-                    <form action="{{url_for('updatecart', code=key)}}" method="post">
+                    <form action="{{url_for('updatecart', code=product.id)}}" method="post">
                     <td>
                         {% set colors = product.colors.split(',') %}
                         <label for="colors">Colors: </label>
@@ -140,7 +140,9 @@
                     <td>${{"%.2f"|format(subtotal - discount|round(1,'floor')) }}</td>
                     <td><button type="submit" class="btn btn-sm btn-info">Update</button> </td>
                 </form>
-                    <td> <a href="{{url_for('deleteitem', id=key)}}" class="btn btn-sm btn-danger">Remove</a></td>
+                    <form action="{{url_for('deleteitem', id=product.id)}}" method="POST">
+                    <td><button type="submit" class="btn btn-danger btn-sm">Remove</button></td>
+                    </form>
                 </tr>
                 {% endfor %}
             </tbody>
