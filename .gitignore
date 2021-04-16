@@ -1,2 +1,5 @@
 venv/*
 secretkey
+LogisticChatbot.sock
+__pycache__/*
+*.pyc

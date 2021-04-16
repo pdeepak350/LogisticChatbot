@@ -2,4 +2,4 @@
 from ecom import app
 if __name__ == '__main__':
 	#You can set debug=True to start debugging 
-    app.run(debug=True)
+    app.run()
