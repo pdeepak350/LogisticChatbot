@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash, session, current_app
 from flask_login import login_user,login_required,current_user,logout_user
-from .models import Cart, User, Brand, Category, Addproduct
+from .models import Admin, Cart, Merchant, User, Brand, Category, Addproduct
 from .forms import RegistrationForm, LoginForm, Addproducts
 from ecom import app, db, bcrypt, login_manager, photos
 from sqlalchemy.sql import text
@@ -21,10 +21,26 @@ def admin():
     if 'email' not in session:
         flash(f'Please login first','danger')
         return redirect(url_for('login'))
-    if session['email']!="admin@admin.com":
+    admin = Admin.query.filter_by(email=session['email']).first()
+    if admin is None:
         return redirect(url_for('home'))
     #fetches all the products from the database
     products=Addproduct.query.all()
+    return render_template('admin/manage.html',products=products)
+
+@app.route("/merchant", methods=['GET', 'POST'])
+def merchant():
+    if 'email' not in session:
+        flash(f'Please login first','danger')
+        return redirect(url_for('login'))
+    merchant = Merchant.query.filter_by(email=session['email']).first()
+    if merchant is None:
+        return redirect(url_for('home'))
+    #fetches all the products from the database
+    merchant_id = merchant.id
+    #merchant_id = str(merchant_id)
+    products=Addproduct.query.filter_by(merchant_id=merchant_id).all()
+    print(products)
     return render_template('admin/manage.html',products=products)
 
 #Route for admin only to manage the brands
@@ -33,7 +49,8 @@ def brands():
     if 'email' not in session:
         flash(f'Please Login First','success')
         return redirect(url_for('login'))
-    if session['email']!="admin@admin.com":
+    admin = Admin.query.filter_by(email=session['email']).first()
+    if admin is None:
         return redirect(url_for('home'))
     #fetches all brands from the database Brand in descending order
     brands=Brand.query.order_by(Brand.id.desc()).all()
@@ -45,7 +62,8 @@ def categories():
     if 'email' not in session:
         flash(f'Please Login First','success')
         return redirect(url_for('login'))
-    if session['email']!="admin@admin.com":
+    admin = Admin.query.filter_by(email=session['email']).first()
+    if admin is None:
         return redirect(url_for('home'))
     # fetches all the categories from Category table in descending order
     categories=Category.query.order_by(Category.id.desc()).all()
@@ -135,184 +153,221 @@ def filtercat(id):
 # Route for admin only
 @app.route('/addbrand', methods=['GET', 'POST'])
 def addbrand():
-	if 'email' not in session:
-		flash(f'Please login first', 'danger')
-		return redirect(url_for('login'))
-	if session['email']!="admin@admin.com":
-		return redirect(url_for('home'))
-	if request.method == "POST":
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
+    admin = Admin.query.filter_by(email=session['email']).first()
+    if admin is None:
+        return redirect(url_for('home'))
+    if request.method == "POST":
 		# Adds new brand to system which is added by admin
-		getbrand= request.form.get('brand')
-		brand= Brand(name=getbrand)
-		db.session.add(brand)
-		flash(f'{getbrand} Successfully added', 'success')
-		db.session.commit()
-		return redirect(url_for('addbrand'))
-	return render_template('product/addbrand.html', brand="brand")
+        getbrand= request.form.get('brand')
+        brand= Brand(name=getbrand)
+        db.session.add(brand)
+        flash(f'{getbrand} Successfully added', 'success')
+        db.session.commit()
+        return redirect(url_for('addbrand'))
+    return render_template('product/addbrand.html', brand="brand")
 
 # Route for admin only
 @app.route('/updatebrand/<int:id>', methods=['GET', 'POST'])
 def updatebrand(id):
-	if 'email' not in session:
-		flash(f'Please login first', 'danger')
-	if session['email']!="admin@admin.com":
-		return redirect(url_for('home'))
-	updatebrand= Brand.query.get_or_404(id)
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+    admin = Admin.query.filter_by(email=session['email']).first()
+    if admin is None:
+        return redirect(url_for('home'))
+    updatebrand= Brand.query.get_or_404(id)
 	# it will fetch brand name from form and replace it with old one
-	brand= request.form.get('brand')
-	if request.method == "POST":
-		updatebrand.name= brand
-		db.session.commit()
-		return redirect(url_for('brands'))
-	return render_template('product/updatebrandandcategory.html', updatebrand=updatebrand)
+    brand= request.form.get('brand')
+    if request.method == "POST":
+        updatebrand.name= brand
+        db.session.commit()
+        return redirect(url_for('brands'))
+    return render_template('product/updatebrandandcategory.html', updatebrand=updatebrand)
 
 # Route for admin only
 # to delete a brand an id of brand is returned to this route
 @app.route('/deletebrand/<int:id>', methods=['GET', 'POST'])
 def deletebrand(id):
-	if session['email']!="admin@admin.com":
-		return redirect(url_for('home'))
-	brand= Brand.query.get_or_404(id)
-	if request.method == "POST":
+    admin = Admin.query.filter_by(email=session['email']).first()
+    if admin is None:
+        return redirect(url_for('home'))
+    brand= Brand.query.get_or_404(id)
+    if request.method == "POST":
 		# it will delete the brand from the system
-		db.session.delete(brand)
-		db.session.commit()
-		return redirect(url_for('brands'))
-	return redirect(url_for('brands'))
+        db.session.delete(brand)
+        db.session.commit()
+        return redirect(url_for('brands'))
+    return redirect(url_for('brands'))
 
 
 @app.route('/addcat', methods=['GET', 'POST'])
 def addcat():
-	if 'email' not in session:
-		flash(f'Please login first', 'danger')
-		return redirect(url_for('login'))
-	if session['email']!="admin@admin.com":
-		return redirect(url_for('home'))
-	if request.method == "POST":
-		getcat= request.form.get('category')
-		cat= Category(name=getcat)
-		db.session.add(cat)
-		flash(f'{getcat} Successfully added', 'success')
-		db.session.commit()
-		return redirect(url_for('addcat'))
-	return render_template('product/addbrand.html')
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
+    admin = Admin.query.filter_by(email=session['email']).first()
+    if admin is None:
+        return redirect(url_for('home'))
+    if request.method == "POST":
+        getcat= request.form.get('category')
+        cat= Category(name=getcat)
+        db.session.add(cat)
+        flash(f'{getcat} Successfully added', 'success')
+        db.session.commit()
+        return redirect(url_for('addcat'))
+    return render_template('product/addbrand.html')
 
 @app.route('/updatecat/<int:id>', methods=['GET', 'POST'])
 def updatecat(id):
-	if 'email' not in session:
-		flash(f'Please login first', 'danger')
-	if session['email']!="admin@admin.com":
-		return redirect(url_for('home'))
-	updatecat= Category.query.get_or_404(id)
-	category= request.form.get('category')
-	if request.method == "POST":
-		updatecat.name= category
-		db.session.commit()
-		return redirect(url_for('categories'))
-	return render_template('product/updatebrandandcategory.html', updatecat=updatecat)
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+    admin = Admin.query.filter_by(email=session['email']).first()
+    if admin is None:
+        return redirect(url_for('home'))
+    updatecat= Category.query.get_or_404(id)
+    category= request.form.get('category')
+    if request.method == "POST":
+        updatecat.name= category
+        db.session.commit()
+        return redirect(url_for('categories'))
+    return render_template('product/updatebrandandcategory.html', updatecat=updatecat)
 
 @app.route('/deletecategory/<int:id>', methods=['GET', 'POST'])
 def deletecategory(id):
-	if session['email']!="admin@admin.com":
-		return redirect(url_for('home'))
-	cat= Category.query.get_or_404(id)
-	if request.method == "POST":
-		db.session.delete(cat)
-		db.session.commit()
-		return redirect(url_for('categories'))
-	return redirect(url_for('categories'))
+    admin = Admin.query.filter_by(email=session['email']).first()
+    if admin is None:
+        return redirect(url_for('home'))
+    cat= Category.query.get_or_404(id)
+    if request.method == "POST":
+        db.session.delete(cat)
+        db.session.commit()
+        return redirect(url_for('categories'))
+    return redirect(url_for('categories'))
 
 @app.route('/addproduct', methods=['GET', 'POST'])
 def addproduct():
-	if 'email' not in session:
-		flash(f'Please login first', 'danger')
-		return redirect(url_for('login'))
-	if session['email']!="admin@admin.com":
-		return redirect(url_for('home'))
-	brands= Brand.query.all()
-	categories= Category.query.all()
-	form= Addproducts(request.form)
-	if request.method == "POST":
-		name= form.name.data
-		price= form.price.data
-		discount= form.discount.data
-		stock= form.stock.data
-		color= form.color.data
-		desc= form.description.data
-		brand= request.form.get('brand')
-		category= request.form.get('category')
-		image1= photos.save(request.files.get('image1'))
-		image2= photos.save(request.files.get('image2'))
-		image3= photos.save(request.files.get('image3'))
-		addpro= Addproduct(name=name, price=price, discount=discount, stock=stock, color=color, desc=desc, brand_id=brand, category_id=category, image1=image1, image2=image2, image3=image3)
-		db.session.add(addpro)
-		flash(f'Product Added Successfully', 'success')
-		db.session.commit()
-		return redirect(url_for('addproduct'))
-	return render_template('product/addproduct.html', form=form, brands=brands, categories=categories)
+    if 'email' not in session:
+        flash(f'Please login first', 'danger')
+        return redirect(url_for('login'))
+    admin = Admin.query.filter_by(email=session['email']).first()
+    merchant = Merchant.query.filter_by(email=session['email']).first()
+    if admin is None and merchant is None:
+        return redirect(url_for('home'))
+    brands= Brand.query.all()
+    categories= Category.query.all()
+    form= Addproducts(request.form)
+    if request.method == "POST":
+        name= form.name.data
+        price= form.price.data
+        discount= form.discount.data
+        stock= form.stock.data
+        color= form.color.data
+        desc= form.description.data
+        brand= request.form.get('brand')
+        category= request.form.get('category')
+        image1= photos.save(request.files.get('image1'))
+        image2= photos.save(request.files.get('image2'))
+        image3= photos.save(request.files.get('image3'))
+        merchant_id = form.merchant_id.data
+        merchant_name = form.merchant_name.data
+        merchant_phone = form.merchant_phone.data
+        merchant_address = form.merchant_address.data
+        addpro= Addproduct(name=name, price=price, discount=discount, stock=stock, color=color, desc=desc, brand_id=brand, category_id=category, image1=image1, image2=image2, image3=image3, merchant_id=merchant_id, merchant_name=merchant_name, merchant_phone=merchant_phone, merchant_address=merchant_address)
+        db.session.add(addpro)
+        flash(f'Product Added Successfully', 'success')
+        db.session.commit()
+        return redirect(url_for('addproduct'))
+    return render_template('product/addproduct.html', form=form, brands=brands, categories=categories)
 
 @app.route('/updateproduct/<int:id>', methods=['GET', 'POST'])
 def updateproduct(id):
-	if session['email']!="admin@admin.com":
-		return redirect(url_for('home'))
-	brands= Brand.query.all()
-	categories= Category.query.all()
-	product= Addproduct.query.get_or_404(id)
-	brand= request.form.get('brand')
-	category= request.form.get('category')
-	form = Addproducts(request.form)
-	if request.method == "POST":
-		product.name= form.name.data
-		product.price= form.price.data
-		product.discount= form.discount.data
-		product.brand_id= brand
-		product.category_id= category
-		product.color= form.color.data
-		product.desc= form.description.data
-		if request.files.get('image1'):
-			try:
-				os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image1))
-				product.image1= photos.save(request.files.get('image1'))
-			except:
-				product.image1= photos.save(request.files.get('image1'))
-		if request.files.get('image2'):
-			try:
-				os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image2))
-				product.image2= photos.save(request.files.get('image2'))
-			except:
-				product.image2= photos.save(request.files.get('image2'))
-		if request.files.get('image3'):
-			try:
-				os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image3))
-				product.image3= photos.save(request.files.get('image3'))
-			except:
-				product.image3= photos.save(request.files.get('image3'))
-		db.session.commit()
-		return redirect(url_for('admin'))
-	form.name.data= product.name
-	form.price.data= product.price
-	form.discount.data= product.discount
-	form.stock.data= product.stock
-	form.color.data= product.color
-	form.description.data= product.desc
-	return render_template('product/updateproduct.html', form=form, brands=brands, categories=categories, product=product)
+    admin = Admin.query.filter_by(email=session['email']).first()
+    merchant = Merchant.query.filter_by(email=session['email']).first()
+    if admin is None and merchant is None:
+        return redirect(url_for('home'))
+    brands= Brand.query.all()
+    categories= Category.query.all()
+    if admin is None:
+        product= Addproduct.query.filter_by(id=id,merchant_id=merchant.id).all()
+        for i in product:
+            product=i
+    elif merchant is None:
+        product= Addproduct.query.get_or_404(id)
+    brand= request.form.get('brand')
+    category= request.form.get('category')
+    form = Addproducts(request.form)
+    if request.method == "POST":
+        product.name= form.name.data
+        product.price= form.price.data
+        product.discount= form.discount.data
+        product.brand_id= brand
+        product.category_id= category
+        product.color= form.color.data
+        product.desc= form.description.data
+        if request.files.get('image1'):
+            try:
+                os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image1))
+                product.image1= photos.save(request.files.get('image1'))
+            except:
+                product.image1= photos.save(request.files.get('image1'))
+        if request.files.get('image2'):
+            try:
+                os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image2))
+                product.image2= photos.save(request.files.get('image2'))
+            except:
+                product.image2= photos.save(request.files.get('image2'))
+        if request.files.get('image3'):
+            try:
+                os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image3))
+                product.image3= photos.save(request.files.get('image3'))
+            except:
+                product.image3= photos.save(request.files.get('image3'))
+        if admin is None:
+            product.merchant_id = merchant.id
+        elif merchant is None:
+            product.merchant_id = form.merchant_id.data
+        product.merchant_name = form.merchant_name.data
+        product.merchant_phone = form.merchant_phone.data
+        product.merchant_address = form.merchant_address.data
+        db.session.commit()
+        return redirect(url_for('admin'))
+    form.name.data= product.name
+    form.price.data= product.price
+    form.discount.data= product.discount
+    form.stock.data= product.stock
+    form.color.data= product.color
+    form.description.data= product.desc
+    form.merchant_id.data = product.merchant_id
+    form.merchant_name.data = product.merchant_name
+    form.merchant_phone.data = product.merchant_phone
+    form.merchant_address.data = product.merchant_address
+    return render_template('product/updateproduct.html', form=form, brands=brands, categories=categories, product=product)
 
 @app.route('/deleteproduct/<int:id>', methods=['GET', 'POST'])
 def deleteproduct(id):
-	if session['email']!="admin@admin.com":
-		return redirect(url_for('home'))
-	product= Addproduct.query.get_or_404(id)
-	if request.method == "POST":
-		try:
-			os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image1))
-			os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image2))
-			os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image3))
-		except Exception as e:
-			print("Something Bad happened : ", e)
-		db.session.delete(product)
-		db.session.commit()
-		return redirect(url_for('admin'))
-	return redirect(url_for('admin'))
+    admin = Admin.query.filter_by(email=session['email']).first()
+    merchant = Merchant.query.filter_by(email=session['email']).first()
+    if admin is None and merchant is None:
+        return redirect(url_for('home'))
+    if admin is None:
+        product= Addproduct.query.filter_by(id=id,merchant_id=merchant.id).all()
+        for i in product:
+            product=i
+    elif merchant is None:
+        product= Addproduct.query.get_or_404(id)
+    if request.method == "POST":
+        try:
+            os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image1))
+            os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image2))
+            os.unlink(os.path.join(current_app.root_path, "static/img/"+product.image3))
+        except Exception as e:
+            print("Something Bad happened : ", e)
+        db.session.delete(product)
+        db.session.commit()
+        return redirect(url_for('admin'))
+    return redirect(url_for('admin'))
 
 #Funtion to add the Addproduct db items with quantity and color attribute
 def MagerDicts(dict1,dict2):
@@ -380,7 +435,6 @@ def getCart():
             cart_items = Merge(cart_items, temp_cart)
 
         #if no items in cart it will guide user to product page
-        print(cart_items)
         subtotal = 0
         grandtotal = 0
         # it will get the info. about all the items in the cart by iterating
@@ -450,6 +504,29 @@ def clearcart():
         flash(f'deleted items', 'success')
         return redirect(url_for('allproduct'))
 
+@app.route('/profile')
+def profile():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    return render_template('profile.html')
+
+@app.route('/merchantprofile')
+def merchantprofile():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    merchant = Merchant.query.filter_by(email=session['email']).first()
+    if merchant is None:
+        return redirect(url_for('home'))
+    return render_template('merchantprofile.html')
+    
+@app.route('/adminprofile')
+def adminprofile():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    admin = Admin.query.filter_by(email=session['email']).first()
+    if admin is None:
+        return redirect(url_for('home'))
+    return render_template('adminprofile.html')
 
 # Route to checkout
 @app.route('/checkout')
@@ -458,3 +535,4 @@ def checkout():
         flash('Please Login First','danger')
         return redirect(url_for('login'))
     return render_template('product/checkout.html')
+    
