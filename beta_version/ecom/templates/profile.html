@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head%}
+{% block title %}Profile{% endblock title %}
+{% block nav %}
+
+<header class="header_area sticky-header">
+  <div class="main_menu">
+    <nav class="navbar navbar-expand-lg navbar-light main_box">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <a class="navbar-brand logo_h" href="{{ url_for('home') }}"><img
+            src="{{url_for ('static', filename='img/fav.png') }}" alt=""></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+          <ul class="nav navbar-nav menu_nav ml-auto">
+            <li class="nav-item active"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+            <li class="nav-item submenu dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                aria-expanded="false">Shop</a>
+              <ul class="dropdown-menu">
+                <li class="nav-item"><a href="{{url_for('allproduct')}}" class="nav-link">Shop</a></li>
+                <li class="nav-item"><a href="{{url_for('getCart')}}" class="nav-link"> Cart ({{
+                    session['Shoppingcart']|length }}) </a></li>
+              </ul>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="{{url_for('contact')}}">Contact</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{url_for('profile')}}">Profile</a></li>
+            {% if session['email']=="admin@admin.com" %}
+            <li class="nav-item submenu dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Manage
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <li class="nav-item"><a class="nav-link" href="{{url_for('admin')}}">Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('brands')}}">Brand</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('categories')}}">Category</a></li>
+              </ul>
+            </li>
+            <li class="nav-item submenu dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Add
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <li class="nav-item"><a class="nav-link" href="{{url_for('addproduct')}}">Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('addbrand')}}">Brand</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('addcat')}}">Category</a></li>
+              </ul>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+              {% if 'email' in session %}
+              <a href="{{url_for('logout')}}" class="nav-link">Logout</a>
+              {% else %}
+              <a href="{{url_for('login')}}" class="nav-link">Login</a>
+              {% endif %}
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item"><a href="{{url_for('getCart')}}" class="cart"><span class="ti-bag"></span>({{
+                session['Shoppingcart']|length }})</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+{% endblock nav %}
+{% block content %}
+
+<section class="banner-area">
+  <div class="container">
+    <div class="row fullscreen align-items-center justify-content-start margin-top container">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title mb-4">
+              <div class="d-flex justify-content-start">
+                <div class="userData ml-3">
+                  <h6>admin@admin.com</h6>
+                  <h6>Customer Info</h6>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="tab-content">
+                  <div class="mt-4">
+                    <div class="row">
+                      <div class="col-sm-3 col-md-2 col-5">
+                        <label class="item-label">Full Name</label>
+                      </div>
+                      <div class="col-md-8 col-6">Lorem Ipsum</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                      <div class="col-sm-3 col-md-2 col-5">
+                        <label class="item-label">Birth Date</label>
+                      </div>
+                      <div class="col-md-8 col-6">March 22, 1983.</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                      <div class="col-sm-3 col-md-2 col-5">
+                        <label class="item-label">Lorem Ipsum</label>
+                      </div>
+                      <div class="col-md-8 col-6">Lorem Ipsum</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                      <div class="col-sm-3 col-md-2 col-5">
+                        <label class="item-label">Lorem Ipsum</label>
+                      </div>
+                      <div class="col-md-8 col-6">Lorem Ipsum</div>
+                    </div>
+                    <hr>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content%}

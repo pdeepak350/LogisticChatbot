@@ -458,3 +458,10 @@ def checkout():
         flash('Please Login First','danger')
         return redirect(url_for('login'))
     return render_template('product/checkout.html')
+
+@app.route('/profile')
+def profile():
+    if 'email' not in session:
+        flash('Please Login First', 'danger')
+        return redirect(url_for('login'))
+    return render_template('profile.html')
