@@ -79,21 +79,21 @@
 </header>
 {% endblock nav %}
 {% block content %}
+
 <section class="banner-area organic-breadcrumb">
-  <div class="container">
-    <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-      <div class="col-first">
-        <h1>Login/Register</h1>
-        <nav class="d-flex align-items-center">
-          <a href="{{ url_for('home') }}">Home<span class="lnr lnr-arrow-right"></span></a>
-          <a href="{{url_for('profile')}}">Profile<span class="lnr"></span></a>
-        </nav>
+    <div class="container">
+      <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+        <div class="col-first">
+          <h1>Tracking</h1>
+          <nav class="d-flex align-items-center">
+            <a href="{{ url_for('home') }}">Home<span class="lnr lnr-arrow-right"></span></a>
+            <a href="{{url_for('tracking')}}">tracking<span class="lnr"></span></a>
+          </nav>
+        </div>
       </div>
     </div>
-  </div>
-</section>
-<div class="container mt-4 mb-5">
-    
-</div>
+  </section>
+
+  
 
 {% endblock content %}

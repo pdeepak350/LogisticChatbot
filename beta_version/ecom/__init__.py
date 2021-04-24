@@ -4,6 +4,9 @@ from flask_bcrypt import Bcrypt
 from flask_uploads import IMAGES,UploadSet,configure_uploads,patch_request_class
 from flask_login import LoginManager
 from flask_ngrok import run_with_ngrok
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
+
 import os
 
 basedir=os.path.abspath(os.path.dirname(__file__))
@@ -19,6 +22,9 @@ configure_uploads(app, photos)
 patch_request_class(app)
 #it initiates the SQLAlchemy 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
 #bcrypt is used to hash the password stored for user
 bcrypt = Bcrypt(app)
 #This are essentials for login and logout purpose of user
@@ -27,5 +33,5 @@ login_manager.login_view = "login"
 login_manager.login_message_category = "info"
 #This files are imported at bottom to recover from circular import issue
 from ecom import routes
-
+#manager.run()
 # run_with_ngrok(app)

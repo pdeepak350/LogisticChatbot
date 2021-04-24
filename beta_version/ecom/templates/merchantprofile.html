@@ -3,7 +3,7 @@
 {% block head %}
 {{ super() }}
 {% endblock head%}
-{% block title %}Cart{% endblock title %}
+{% block title %}Merchant profile{% endblock title %}
 {% block nav %}
 <header class="header_area sticky-header">
   <div class="main_menu">
@@ -83,17 +83,26 @@
   <div class="container">
     <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
       <div class="col-first">
-        <h1>Login/Register</h1>
+        <h1>Merchant Profile</h1>
         <nav class="d-flex align-items-center">
           <a href="{{ url_for('home') }}">Home<span class="lnr lnr-arrow-right"></span></a>
-          <a href="{{url_for('profile')}}">Profile<span class="lnr"></span></a>
+          <a href="{{url_for('merchantprofile')}}">Merchant Profile<span class="lnr"></span></a>
         </nav>
       </div>
     </div>
   </div>
 </section>
 <div class="container mt-4 mb-5">
+    <div class="container mt-4 mb-5">
+        <label>Add</label><br>
+        <button type="button" class="btn btn-outline-primary" onclick="window.location.href=`{{url_for('addproduct')}}`;">Product</button>
+        <hr>
+        <label>Manage</label><br>
+        <button type="button" class="btn btn-outline-primary" onclick="window.location.href=`{{url_for('merchant')}}`;">Product</button>
+        <hr>
+    </div>
     
+    <br><br><br>
 </div>
 
 {% endblock content %}
