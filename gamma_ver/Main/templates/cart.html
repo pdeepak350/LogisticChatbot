@@ -53,33 +53,40 @@
                                                     <img class="u-img-fluid" src="{{url_for('static',filename='img/'+ product.image)}}" alt=""></div>
                                                 <div class="table-p__info">
                                                     <span class="table-p__name">
-                                                        <a href="product-detail.html">{{product.name}}</a>
-                                                    </span>
-                                                    <span class="table-p__category">
-                                                        <a href="shop.html">Electronics</a>
+                                                        <a href="{{url_for('product',id=product.id)}}">{{product.name}}</a>
                                                     </span>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>
-                                            <span class="table-p__price">{{product.price}}</span>
-                                        </td>
-                                        <td>
-                                            <div class="table-p__input-counter-wrap">
-                                                <form class="pd-detail__form" action="{{url_for('updatecart',code=product.id)}}" method="POST">
-                                                <div class="input-counter">
-                                                    <span class="input-counter__minus fas fa-minus"></span>
-                                                    <input class="input-counter__text input-counter--text-primary-style" name="quantity" type="text" value="{{product.quantity}}" data-min="1" data-max="{{product.stock}}">
-                                                    <span class="input-counter__plus fas fa-plus"></span></div>
-                                                <a class="route-box__link" type="submit"><i class="fas fa-sync"></i><span>Update Cart</span></a>
-                                                </form>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="table-p__del-wrap">
-                                                <a class="far fa-trash-alt table-p__delete-link" href="{{url_for('deleteitem',id=product.id)}}"></a>
-                                            </div>
-                                        </td>
+                                        <form action="{{url_for('updatecart', code=product.id)}}" method="post">
+                                            <!-- <td>
+                                                <span class="table-p__price">{{product.price}}</span>
+                                            </td> -->
+                                            <td>
+                                                 <input class="input-counter__text input-counter--text-primary-style" type="number" name="quantity" min="1" max="{{product.stock}}" value="{{product.quantity}}"> 
+                                            </td>
+                                            {% if product.discount  %}
+                                            <!-- <td>
+                                                {{product.discount}} % &nbsp; &nbsp; is {{"%.2f"|format(discount)}}
+                                            </td> -->
+                                            {% else %}
+                                            <!-- <td></td> -->
+                                            {% endif %}
+                                            {% set subtotal = product.quantity|int * product.price|float  %}
+                                            <td>
+                                                ${{"%.2f"|format(subtotal - discount|round(1,'floor')) }}
+                                            </td>
+                                            <td>
+                                                <button type="submit" class="btn btn-sm btn-info route-box__link"><i class="fas fa-sync"></i>Update</button>
+                                            </td>
+                                        </form>
+                                        <form action="{{url_for('deleteitem', id=product.id)}}" method="POST">
+                                            <td>
+                                                <div class="table-p__del-wrap">
+                                                    <button class="far fa-trash-alt table-p__delete-link" type="submit"></button>
+                                                </div>
+                                            </td>
+                                        </form>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -97,6 +104,9 @@
                                 <a class="route-box__link" href="{{url_for('clearcart')}}"><i class="fas fa-trash"></i>
                                     <span>CLEAR CART</span>
                                 </a>
+                                <a class="route-box__link" href="{{url_for('checkout')}}"><i class="fas fa-shopping-cart"></i>
+                                    <span>CHECKOUT</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -105,4 +115,5 @@
         </div>
     </div>
 </div>
+
 {% endblock content %}
