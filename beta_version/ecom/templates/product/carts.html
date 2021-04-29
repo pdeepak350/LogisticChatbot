@@ -110,6 +110,7 @@
                 <th>Remove</th>
             </thead>
             <tbody>
+            {% print(cart_items) %}
                 {% for key, product in cart_items.items() %}
                 {% set discount =(product.discount/100) * product.price|float %}
                 <tr>
@@ -149,7 +150,13 @@
         </table>
         <table class="table table-sm mt-3 mb-3">
            <tr>
-               <td> <a href="{{url_for('checkout')}}" class="btn btn-success"> Check out </a> </td>
+               <td>
+               <form action="{{url_for('orderplaced')}}" method="POST">
+               <input type="hidden" name="cart_items" value="{{cart_items}}">
+               <button class="btn btn--e-brand-b-2" type="submit">PLACE ORDER</button>
+               <!-- <a href="{{url_for('orderplaced')}}" class="btn btn-success"> Check out </a> -->
+                </form>
+                </td>
                <td width="35%"></td>
                <td> <h5>Tax: ${{tax}}</h5></td>
                <td> <h5>Grand total: ${{grandtotal}}</h5> </td>

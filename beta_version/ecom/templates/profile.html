@@ -91,6 +91,14 @@
       </div>
     </div>
   </div>
+  {% print(user) %}
+  {% for key,delivery in delivery_items.items() %}
+    {% print(delivery.address) %}
+  {% endfor %}
+  {% print(tax) %}
+  {% print(grandtotal) %}
+  {% print(subtotal) %}
+  {% %}
 </section>
 <div class="container mt-4 mb-5">
     

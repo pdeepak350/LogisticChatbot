@@ -1,10 +1,13 @@
 from flask import render_template, request, redirect, url_for, flash, session, current_app
 from flask_login import login_user,login_required,current_user,logout_user
-from .models import Admin, Cart, Merchant, User, Brand, Category, Addproduct
+from .models import Admin, Cart, Merchant, User, Brand, Category, Addproduct, Delivery, Shipment
 from .forms import RegistrationForm, LoginForm, Addproducts
 from ecom import app, db, bcrypt, login_manager, photos
 from sqlalchemy.sql import text
 import os
+from datetime import datetime, timedelta
+import random
+import string
 
 # Route for user and admin to home page
 @app.route("/")
@@ -453,7 +456,44 @@ def getCart():
             flash(f'no items in cart', 'error')
             return redirect(url_for('allproduct'))
 
+
+@app.route('/orderplaced', methods=['GET','POST'])
+def orderplaced():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    else:
+        try:
+            user_id = session['_user_id']
+            # cart_items = request.form.get('cart_items')
+            cart_items = Cart.query.filter_by(user_id=user_id).all()
+            print(type(cart_items[0]))
+            print(cart_items[0])
+            for i in cart_items:
+                print(i.user_id)
+            if request.method =="POST":
+            #if 'Shoppingcart' in session:
+                for i in cart_items:
+                    product_id = i.product_id
+                    merchant = Addproduct.query.filter_by(id=product_id).first()
+                    user = User.query.filter_by(id=user_id).first()
+                    delivery_reg_time = datetime.now()
+                    delivery_est_date = datetime.now().date() + timedelta(7)
+                    delivery_id = '#'+ran_gen()
+                    delivery = Delivery(User_id=i.user_id ,product_id=product_id, merchant_id=merchant.merchant_id,color='black', quantity=i.quantity ,Delivery_ID=delivery_id,Delivery_Reg_Time=delivery_reg_time ,Delivery_Est_Date=delivery_est_date,Delivery_Sender=merchant.merchant_name,Delivery_Sender_Phone=merchant.merchant_phone, From_Address= merchant.merchant_address, Delivery_Recipient = user.name, Delivery_Recipient_Phone='000000', To_Address='Virginia - VA-20006 - USA', Status_Reason='Order Placed')
+                    db.session.add(delivery)
+                    db.session.commit()
+                    ship_id = '#'+ran_gen(size=9)
+                    shipment = Shipment(Shipment_ID=ship_id, Shipment_Note=random.choices(['processing','shipped','delivered'])[0], Delivery_ID=delivery_id)
+                    db.session.add(shipment)
+                    db.session.commit()
+            pass
+                  
+        except Exception as e:
+            print(e)
+        finally:
+            return redirect(url_for('clearcart'))
 # Route to update cart
+
 # When any item in cart to be updated (only color and quantity can be updated )
 # The page returns id for that cart item for updatation
 @app.route('/updatecart/<int:code>', methods=['GET', 'POST'])
@@ -497,18 +537,74 @@ def clearcart():
         for i in cart:
             db.session.delete(i)
             db.session.commit()
-        flash(f'cart cleared', 'success')
+        flash(f'Order Placed', 'success')
         return redirect(url_for('allproduct'))
     except Exception as e:
         print(e)
-        flash(f'deleted items', 'success')
+        flash(f'Success', 'success')
         return redirect(url_for('allproduct'))
 
 @app.route('/profile')
 def profile():
     if 'email' not in session:
         return redirect(url_for('login'))
-    return render_template('profile.html')
+    else:
+        delivery_items={}
+        user =User.query.filter_by(email=session['email']).first()
+        user_id=session['_user_id']
+        delivery = Delivery.query.filter_by(User_id=user_id).all()
+        subtotal = 0
+        grandtotal = 0
+        for i in delivery:
+            temp_delivery = {}
+            product=Addproduct.query.filter_by(id=i.product_id).first()
+            id = str(i.product_id) + '_' + str(i.Delivery_ID)
+            discount = (product.discount/100) * float(product.price)
+            subtotal += float(product.price) * int(i.quantity)
+            subtotal -= discount
+            tax =("%.2f" %(.06 * float(subtotal)))
+            grandtotal = float("%.2f" % (1.06 * subtotal))
+            temp_delivery = {id:{'id':i.Delivery_ID, 'name':product.name, 'price':float(product.price),'qunatity':i.quantity,'placed_on':i.Delivery_Reg_Time ,'est_date':i.Delivery_Est_Date , 'address':i.To_Address, 'image':product.image1} }
+            delivery_items = Merge(delivery_items, temp_delivery)
+    return render_template('profile.html', user=user, delivery=delivery_items, tax=tax, grandtotal=grandtotal, subtotal=subtotal)
+
+def ran_gen( size=7 , chars=string.ascii_letters+string.digits):
+    return ''.join(random.choice(chars) for x in range(size))
+
+def shipment(delivery_id):
+    try:
+        ship_id = '#'+ran_gen(size=9)
+        shipment = Shipment(Shipment_ID=ship_id, Shipment_Note=random.choices(['processing','shipped','delivered'])[0], Delivery_ID=delivery_id)
+        db.session.add(shipment)
+        db.session.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        return redirect(request.referrer)
+
+@app.route('/manage/<string:delivery_id>', methods=['GET', 'POST'])
+def manage_order(delivery_id):
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    else:
+        delivery_items={}
+        user =User.query.filter_by(email=session['email']).first()
+        delivery = Delivery.query.filter_by(Delivery_ID=delivery_id).all()
+        subtotal = 0
+        grandtotal = 0
+        for i in delivery:
+            temp_delivery = {}
+            product=Addproduct.query.filter_by(id=i.product_id).first()
+            id = str(i.product_id) + '_' + str(i.Delivery_ID)
+            discount = (product.discount/100) * float(product.price)
+            subtotal += float(product.price) * int(i.quantity)
+            subtotal -= discount
+            tax =("%.2f" %(.06 * float(subtotal)))
+            grandtotal = float("%.2f" % (1.06 * subtotal))
+            temp_delivery = {id:{'id':i.Delivery_ID, 'name':product.name, 'price':float(product.price),'qunatity':i.quantity,'placed_on':i.Delivery_Reg_Time ,'est_date':i.Delivery_Est_Date , 'address':i.To_Address, 'image':product.image1} }
+            delivery_items = Merge(delivery_items, temp_delivery)
+            shipment(i.Delivery_ID)
+    return render_template('profile.html', user=user, delivery_items=delivery_items, tax=tax, grandtotal=grandtotal, subtotal=subtotal)
 
 @app.route('/merchantprofile')
 def merchantprofile():

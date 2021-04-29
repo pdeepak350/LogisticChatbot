@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+<!-- Page to Show all products and filter them by category  -->
+{% block head %}
+{{ super() }}
+{% endblock head%}
+{% block title %}Product{% endblock title %}
+{% block content %}
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+      <div class="col-first">
+        <h1>Products</h1>
+        <nav class="d-flex align-items-center">
+          <a href="{{ url_for('home') }}">Home<span class="lnr lnr-arrow-right"></span></a>
+          <a href="{{url_for('allproduct')}}">Products<span class="lnr"></span></a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="container mt-2">
+  <div class="row">
+    {% if get_cat_prod %}
+    {% for get_cat in get_cat_prod %}
+    <div class="col-lg-3 col-md-6">
+      <div class="single-product">
+        <img class="card-img-top" src="{{url_for('static',filename='img/'+product.image1)}}" alt="{{product.name}}" height="250">
+        <div class="product-details">
+          <h6>{{product.name}}</h6>
+          <div class="price">
+            <h6>{{product.price}}</h6>
+          </div>
+          <div class="prd-bottom">
+            <a href="{{url_for('single',id=product.id)}}" class="social-info">
+              <span class="lnr lnr-move"></span>
+              <p class="hover-text">view more</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  <div class="container mt-4 mb-4"></div>
+  <div class="row">
+    {% else %}
+    {% for product in products.items %}
+    <div class="col-lg-3 col-md-6">
+      <div class="single-product">
+        <img class="card-img-top" src="{{url_for('static',filename='img/'+product.image1)}}" alt="{{product.name}}" height="250">
+        <div class="product-details">
+          <h6>{{product.name}}</h6>
+          <div class="price">
+            <h6>{{product.price}}</h6>
+          </div>
+          <div class="prd-bottom">
+            <a href="{{url_for('single',id=product.id)}}" class="social-info">
+              <span class="lnr lnr-move"></span>
+              <p class="hover-text">view more</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="row">
+    <div class="col text-center mt-3 mb-3">
+      {% if products.has_prev %}
+      <a href="{{url_for('allproduct',page=products.prev_num)}}" class="btn btn-sm btn-outline-info">Prev</a>
+      {% endif %}
+      {% for page_num in products.iter_pages() %}
+      {% if page_num %}
+      {% if products.page==page_num %}
+      <a href="{{url_for('allproduct',page=page_num)}}" class="btn btn-sm btn-info">{{page_num}}</a>
+      {% else %}
+      <a href="{{url_for('allproduct',page=page_num)}}" class="btn btn-sm btn-outline-info">{{page_num}}</a>
+      {% endif %}
+      {% else %}
+      ...
+      {% endif %}
+      {% endfor %}
+      {% if products.has_next %}
+      <a href="{{url_for('allproduct',page=products.next_num)}}" class="btn btn-sm btn-outline-info">Next</a>
+      {% endif %}
+    </div>
+  </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock content%}

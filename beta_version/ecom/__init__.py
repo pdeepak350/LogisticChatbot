@@ -33,5 +33,5 @@ login_manager.login_view = "login"
 login_manager.login_message_category = "info"
 #This files are imported at bottom to recover from circular import issue
 from ecom import routes
-#manager.run()
+# manager.run()
 # run_with_ngrok(app)

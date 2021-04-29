@@ -56,7 +56,7 @@ class Addproduct(db.Model):
     merchant_id = db.Column(db.Integer, db.ForeignKey('merchant.id'), nullable=False)
     merchant = db.relationship('Merchant', backref=db.backref('merchant', lazy=True))
     merchant_name = db.Column(db.String(45), nullable=False)
-    merchant_phone = db.Column(db.Integer, nullable=False)
+    merchant_phone = db.Column(db.String(45), nullable=False)
     merchant_address = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
@@ -99,8 +99,9 @@ class Delivery(db.Model):
     Status_Reason = db.Column(db.String(255), nullable=True)
 
 class Shipment(db.Model):   
-    Shipment_ID = db.Column(db.Integer, primary_key=True, nullable=False)
-    Shipment_Note = db.Column(db.Text(500))
-    Delivery_ID = db.Column(db.String(8), db.ForeignKey('delivery.Delivery_ID'))
+    Shipment_ID = db.Column(db.String(10), primary_key=True, nullable=False)
+    Shipment_Note = db.Column(db.String(50))
+    Delivery_ID = db.Column(db.String(8), db.ForeignKey('delivery.Delivery_ID'), nullable=False)
+    delivery = db.relationship('Delivery',backref=db.backref('delivery', lazy=True))
 
 db.create_all()
