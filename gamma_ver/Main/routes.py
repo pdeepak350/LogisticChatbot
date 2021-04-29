@@ -319,21 +319,24 @@ def AddCart():
             quantity = int(request.form.get('quantity'))
 
             if request.method =="POST":
-            #if 'Shoppingcart' in session:
                 cart = Cart.query.filter_by(user_id=user_id, product_id=product_id).first()
-                if cart is None:
+                product = Addproduct.query.filter_by(id=product_id).first()
+                if cart is None and quantity <= product.stock:
                     addcart = Cart(user_id=user_id, product_id=product_id, quantity=quantity)
                     db.session.add(addcart)
                     db.session.commit()
                     
                 else:
-                    #if product_id in session['Shoppingcart']:
                     cart = Cart.query.filter_by(user_id=user_id, product_id=product_id).first()
+                    product = Addproduct.query.filter_by(id=product_id).first()
                     cart_id = cart.id
-                    #cart_color = cart.color
                     ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=product_id).first()
                     ct.quantity = ct.quantity + quantity
-                    db.session.commit()
+                    if ct.quantity <= product.stock:
+                        db.session.commit()
+                    else:
+                        flash(f'quantity exceeded stock', 'error')
+                        return redirect(url_for('getCart'))
             pass
                   
         except Exception as e:
@@ -400,7 +403,7 @@ def checkout():
             temp_cart={}
             product=Addproduct.query.filter_by(id=i.product_id).first()
             id = str(i.product_id) + '_' + str(i.id)
-            temp_cart = {id:{'id':i.id, 'name':product.name,'price':float(product.price),'discount':product.discount,'quantity':i.quantity,'image':product.image1, 'colors':product.color}}
+            temp_cart = {id:{'id':i.id, 'name':product.name,'price':float(product.price),'discount':product.discount,'quantity':i.quantity,'image':product.image1}}
             cart_items = Merge(cart_items, temp_cart)
 
         #if no items in cart it will guide user to product page
@@ -466,11 +469,17 @@ def updatecart(code):
     if request.method =="POST":
         quantity = request.form.get('quantity')
         cart = Cart.query.filter_by(id=code).first()
+        product = Addproduct.query.filter_by(id=cart.product_id).first()
+        blah = int(quantity) + int(cart.quantity)
         try:
-            cart.quantity = quantity
-            db.session.commit()
-            flash('Item is updated!','success')
-            return redirect(url_for('getCart'))
+            if blah <= product.stock:
+                cart.quantity = quantity
+                db.session.commit()
+                flash('Item is updated!','success')
+                return redirect(url_for('getCart'))
+            else:
+                flash('Exceeded stock limit','error')
+                return redirect(url_for('getCart'))
         except Exception as e:
             print(e)
             flash('updated cart', 'success')

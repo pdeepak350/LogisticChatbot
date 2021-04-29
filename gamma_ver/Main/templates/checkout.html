@@ -51,7 +51,7 @@
                                                     <div class="o-card__flex">
                                                         <div class="o-card__img-wrap">
 
-                                                            <img class="u-img-fluid" src="{{url_for('static',filename='img/'+product.image1)}}" alt="{{product.name}}"></div>
+                                                            <img class="u-img-fluid" src="{{url_for('static',filename='img/'+product.image)}}" alt="{{product.name}}"></div>
                                                         <div class="o-card__info-wrap">
 
                                                             <span class="o-card__name">
@@ -60,7 +60,7 @@
 
                                                             <span class="o-card__quantity">Quantity x {{product.quantity}}</span>
                                                         {% if product.discount > 0 %}
-                                                            <span class="o-card__price">{{product.price*product.discount/100}}</span>
+                                                            <span class="o-card__price">{{product.price-(product.price*product.discount/100)}}</span>
                                                         {% else %}
                                                             <span class="o-card__price">{{product.price}}</span>
                                                         {% endif %}
@@ -81,13 +81,11 @@
                                                     <span class="ship-b__text">Ship to:</span>
                                                     <div class="ship-b__box u-s-m-b-30">
                                                         <label class="gl-label" for="address">Address</label>
-
-                                                         <input class="input-text input-text--primary-style" name="address" type="text" placeholder="Enter Address">
+                                                        <input class="input-text input-text--primary-style" name="address" type="text" placeholder="Enter Address">
                                                     </div>
                                                     <div class="ship-b__box u-s-m-b-30">
                                                         <label class="gl-label" for="phone_no">Phone</label>
-
-                                                         <input class="input-text input-text--primary-style" name="phone" type="text" placeholder="Enter Phone No.">
+                                                        <input class="input-text input-text--primary-style" name="phone" type="text" placeholder="Enter Phone No.">
                                                     </div>
                                             </div>
                                         </div>
