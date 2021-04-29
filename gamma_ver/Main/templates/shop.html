@@ -865,7 +865,7 @@
                                                         <a href="shop.html">{{product.category}}</a></div>
                                                     <div class="product-m__name">
 
-                                                        <a href="product-detail.html">{{product.name}}</a></div>
+                                                        <a href="{{url_for('product',id=product.id)}}">{{product.name}}</a></div>
 
                                                     <div class="product-m__price">{{product.price}}</div>
                                                     <div class="product-m__hover">

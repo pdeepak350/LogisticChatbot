@@ -53,7 +53,7 @@ class Addproduct(db.Model):
     merchant_id = db.Column(db.Integer, db.ForeignKey('merchant.id'), nullable=False)
     merchant = db.relationship('Merchant', backref=db.backref('merchant', lazy=True))
     merchant_name = db.Column(db.String(45), nullable=False)
-    merchant_phone = db.Column(db.Integer, nullable=False)
+    merchant_phone = db.Column(db.String(8), nullable=False)
     merchant_address = db.Column(db.Text, nullable=False)
 
     def __repr__(self):

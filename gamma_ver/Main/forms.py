@@ -30,7 +30,7 @@ class Addproducts(Form):
     image3=FileField('Image_3',validators=[FileAllowed(['jpg','png','jpeg','gif']),'only images supported'])
     merchant_id = IntegerField('Merchant ID', [validators.DataRequired()])
     merchant_name = StringField('Merchant Name', [validators.DataRequired()])
-    merchant_phone = DecimalField('Merchant Phone', [validators.DataRequired()])
+    merchant_phone = StringField('Merchant Phone', [validators.DataRequired()])
     merchant_address = TextAreaField('Merchant Address',[validators.DataRequired()])
 
 class Delivery(Form):

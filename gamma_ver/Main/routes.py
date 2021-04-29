@@ -98,6 +98,9 @@ def logout():
 @app.route('/signup', methods=['GET', 'POST'])
 def SignUp():
     # Get data from the Registration Form
+    if current_user.is_authenticated:
+        next = request.args.get('next')
+        return redirect(next or url_for('index'))
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
         hash_password = bcrypt.generate_password_hash(form.password.data)
@@ -327,7 +330,7 @@ def AddCart():
                     #if product_id in session['Shoppingcart']:
                     cart = Cart.query.filter_by(user_id=user_id, product_id=product_id).first()
                     cart_id = cart.id
-                    cart_color = cart.color
+                    #cart_color = cart.color
                     ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=product_id).first()
                     ct.quantity = ct.quantity + quantity
                     db.session.commit()
@@ -373,7 +376,8 @@ def getCart():
                 subtotal -= discount
                 tax =("%.2f" %(.06 * float(subtotal)))
                 grandtotal = float("%.2f" % (1.06 * subtotal))
-                # print(session['Shoppingcart'].items())  
+                # for key, product in cart_items.items():
+                #     print(product)  
             return render_template('cart.html',tax=tax, grandtotal=grandtotal, cart_items=cart_items, product_id=product_id)
         except Exception as e:
             print(e)
