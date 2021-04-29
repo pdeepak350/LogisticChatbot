@@ -2,125 +2,107 @@
 {% block head %}
 {{ super() }}
 {% endblock head %}
-{% block title %}Home{% endblock title %}
+{% block title %}Cart{% endblock title %}
 {% block content %}
-{% include '_message.html' %}
-        <!--====== App Content ======-->
-        <div class="app-content">
-            <!--====== Section 1 ======-->
-            <div class="u-s-p-y-60">
-                <!--====== Section Content ======-->
-                <div class="section__content">
-                    <div class="container">
-                        <div class="breadcrumb">
-                            <div class="breadcrumb__wrap">
-                                <ul class="breadcrumb__list">
-                                    <li class="has-separator">
-
-                                        <a href="{{url_for('index')}}">Home</a></li>
-                                    <li class="is-marked">
-
-                                        <a href="{{url_for('getCart')}}">Cart</a></li>
-                                </ul>
-                            </div>
-                        </div>
+<div class="app-content">
+    <div class="u-s-p-y-60">
+        <div class="section__content">
+            <div class="container">
+                <div class="breadcrumb">
+                    <div class="breadcrumb__wrap">
+                        <ul class="breadcrumb__list">
+                            <li class="has-separator">
+                                <a href="{{url_for('index')}}">Home</a>
+                            </li>
+                            <li class="is-marked">
+                                <a href="{{url_for('getCart')}}">Cart</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <!--====== End - Section 1 ======-->
-            <!--====== Section 2 ======-->
-            <div class="u-s-p-b-60">
-                <!--====== Section Intro ======-->
-                <div class="section__intro u-s-m-b-60">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="section__text-wrap">
-                                    <h1 class="section__heading u-c-secondary">SHOPPING CART</h1>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--====== End - Section Intro ======-->
-                <!--====== Section Content ======-->
-                <div class="section__content">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12 col-sm-12 u-s-m-b-30">
-                                <div class="table-responsive">
-                                    <table class="table-p">
-                                        <tbody>
-                                            {% for key, product in cart_items.items() %}
-                                            {% set discount =(product.discount/100) * product.price|float %}
-                                            <tr>
-                                                <td>{{loop.index}}</td>
-                                                <td>
-                                                    <div class="table-p__box">
-                                                        <div class="table-p__img-wrap">
-
-                                                            <img class="u-img-fluid" src="{{url_for('static',filename='img/'+product.image)}}" alt=""></div>
-                                                        <div class="table-p__info">
-
-                                                            <span class="table-p__name">
-
-                                                                <a href="product-detail.html">{{product.name}}</a></span>
-
-                                                            <span class="table-p__category">
-
-                                                                <a href="shop.html">Electronics</a></span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="table-p__price">{{product.price}}</span></td>
-                                                <td>
-                                                    <div class="table-p__input-counter-wrap">
-
-                                                        <form class="pd-detail__form" action="{{url_for('updatecart',code=product.id)}}" method="POST">
-                                                        <div class="input-counter">
-
-                                                            <span class="input-counter__minus fas fa-minus"></span>
-
-                                                            <input class="input-counter__text input-counter--text-primary-style" name="quantity" type="text" value="{{product.quantity}}" data-min="1" data-max="{{product.stock}}">
-
-                                                            <span class="input-counter__plus fas fa-plus"></span></div>
-                                                        <a class="route-box__link" type="submit"><i class="fas fa-sync"></i><span>Update Cart</span></a>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="table-p__del-wrap">
-
-                                                        <a class="far fa-trash-alt table-p__delete-link" href="{{url_for('deleteitem',id=product.id)}}"></a></div>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="route-box">
-                                    <div class="route-box__g1">
-                                        <a class="route-box__link" href="{{url_for('shop')}}"><i class="fas fa-long-arrow-alt-left"></i>
-                                            <span>CONTINUE SHOPPING</span></a></div>
-                                    <div class="route-box__g2">
-                                        <a class="route-box__link" href="{{url_for('clearcart')}}"><i class="fas fa-trash"></i>
-                                            <span>CLEAR CART</span></a>
-
-                                        <!--<a class="route-box__link" href="{{url_for('updatecart',code=product.id)}}"><i class="fas fa-sync"></i>
-
-                                            <span>UPDATE CART</span></a> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--====== End - Section Content ======-->
-            </div>
-            <!--====== End - Section 2 ======-->
         </div>
-        <!--====== End - App Content ======-->
+    </div>
+    <div class="u-s-p-b-60">
+        <div class="section__intro u-s-m-b-60">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section__text-wrap">
+                            <h1 class="section__heading u-c-secondary">SHOPPING CART</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section__content">
+            <div class="container">
+                {% include '_message.html' %}
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 u-s-m-b-30">
+                        <div class="table-responsive">
+                            <table class="table-p">
+                                <tbody>
+                                    {% for key, product in cart_items.items() %}
+                                    {% set discount=(product.discount/100) * product.price|float %}
+                                    <tr>
+                                        <td>{{loop.index}}</td>
+                                        <td>
+                                            <div class="table-p__box">
+                                                <div class="table-p__img-wrap">
+                                                    <img class="u-img-fluid" src="{{url_for('static',filename='img/'+ product.image)}}" alt=""></div>
+                                                <div class="table-p__info">
+                                                    <span class="table-p__name">
+                                                        <a href="product-detail.html">{{product.name}}</a>
+                                                    </span>
+                                                    <span class="table-p__category">
+                                                        <a href="shop.html">Electronics</a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="table-p__price">{{product.price}}</span>
+                                        </td>
+                                        <td>
+                                            <div class="table-p__input-counter-wrap">
+                                                <form class="pd-detail__form" action="{{url_for('updatecart',code=product.id)}}" method="POST">
+                                                <div class="input-counter">
+                                                    <span class="input-counter__minus fas fa-minus"></span>
+                                                    <input class="input-counter__text input-counter--text-primary-style" name="quantity" type="text" value="{{product.quantity}}" data-min="1" data-max="{{product.stock}}">
+                                                    <span class="input-counter__plus fas fa-plus"></span></div>
+                                                <a class="route-box__link" type="submit"><i class="fas fa-sync"></i><span>Update Cart</span></a>
+                                                </form>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="table-p__del-wrap">
+                                                <a class="far fa-trash-alt table-p__delete-link" href="{{url_for('deleteitem',id=product.id)}}"></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="route-box">
+                            <div class="route-box__g1">
+                                <a class="route-box__link" href="{{url_for('shop')}}"><i class="fas fa-long-arrow-alt-left"></i>
+                                    <span>CONTINUE SHOPPING</span>
+                                </a>
+                            </div>
+                            <div class="route-box__g2">
+                                <a class="route-box__link" href="{{url_for('clearcart')}}"><i class="fas fa-trash"></i>
+                                    <span>CLEAR CART</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

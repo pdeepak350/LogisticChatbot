@@ -9,9 +9,9 @@
   <div class="container">
     <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
       <div class="col-first">
-        <h1>Login/Register</h1>
+        <h1>Cart</h1>
         <nav class="d-flex align-items-center">
-          <a href="{{ url_for('home') }}">Home<span class="lnr lnr-arrow-right"></span></a>
+          <a href="{{ url_for('index') }}">Home<span class="lnr lnr-arrow-right"></span></a>
           <a href="{{url_for('getCart')}}">Cart<span class="lnr"></span></a>
         </nav>
       </div>
@@ -27,7 +27,6 @@
                 <th>Sr</th>
                 <th>Image</th>
                 <th>Name</th>
-                <th>Color</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Discount</th>
@@ -43,18 +42,6 @@
                     <td><img src="{{url_for('static',filename='img/'+ product.image)}}" alt="{{product.name}}" width="50" height="45"></td>
                     <td>{{product.name}}</td>
                     <form action="{{url_for('updatecart', code=product.id)}}" method="post">
-                    <td>
-                        {% set colors = product.colors.split(',') %}
-                        <label for="colors">Colors: </label>
-                        <select name="color" id="color">
-                            <option value="{{product.color}}" style="display: none;">{{product.color|capitalize}}</option>
-                            {% for color in colors %}
-                            {% set col = color.split(':') %}
-                            <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
-                            {% endfor %}
-                        </select>
-                    
-                    </td>
                     <td>${{"%.2f"|format(product.price)}}</td>
                     <td> <input type="number" name="quantity" min="1" max="{{product.stock}}" value="{{product.quantity}}"> </td>
                     {% if product.discount  %}

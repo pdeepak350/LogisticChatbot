@@ -378,7 +378,7 @@ def getCart():
                 grandtotal = float("%.2f" % (1.06 * subtotal))
                 # for key, product in cart_items.items():
                 #     print(product)  
-            return render_template('cart.html',tax=tax, grandtotal=grandtotal, cart_items=cart_items, product_id=product_id)
+            return render_template('cart.html', tax=tax, grandtotal=grandtotal, cart_items=cart_items, product_id=product_id)
         except Exception as e:
             print(e)
             flash(f'no items in cart', 'error')
