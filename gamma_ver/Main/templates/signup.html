@@ -21,10 +21,10 @@
                                 <ul class="breadcrumb__list">
                                     <li class="has-separator">
 
-                                        <a href="index.html">Home</a></li>
+                                        <a href="{{url_for('index')}}">Home</a></li>
                                     <li class="is-marked">
 
-                                        <a href="signup.html">Signup</a></li>
+                                        <a href="{{url_for('logout')}}">Signup</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -100,7 +100,7 @@
 
                                                 <button class="btn btn--e-transparent-brand-b-2" type="submit">CREATE</button></div>
 
-                                            <a class="gl-link" href="index.html">Return to Store</a>
+                                            <a class="gl-link" href="{{url_for('index')}}">Return to Store</a>
                                         </form>
                                     </div>
                                 </div>
