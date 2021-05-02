@@ -545,13 +545,16 @@ def t_order():
     if 'email' not in session:
         return redirect(url_for('login'))
     else:
-        return render_template('dash-track-order.html')
+        user =User.query.filter_by(email=session['email']).first()
+        return render_template('dash-track-order.html', user=user)
 
 @app.route('/trackOrder/<string:delivery_id>', methods=['GET', 'POST'])
 def track_order(delivery_id):
     if 'email' not in session:
         return redirect(url_for('login'))
     else:
+        if request.method == 'POST':
+            delivery_id = request.form.get['order-id']
         delivery_items={}
         user =User.query.filter_by(email=session['email']).first()
         delivery = Delivery.query.filter_by(Delivery_ID=delivery_id).all()
