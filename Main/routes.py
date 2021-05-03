@@ -641,12 +641,15 @@ def clearorder(delivery_id):
 
 def results():
     req = request.get_json(force=True)
-    action = req.get('queryResult').get('action')
-    products = Category.query.all()
-    if action in products:
-        category_id = Category.query.filter_by(name=action)
-        product = Addproduct.query.filter_by(category_id=category_id.id)
-        return {'fulfillmentText': product.name + url_for('product',id=product.id)}
+    queryResult = req.get('queryResult')
+    if queryResult['action'] == "product.search":
+        for key,value in queryResult['parameters']:
+            return {'fulfillmentText': value}
+    # products = Category.query.all()
+    # if action == "product.search":
+    #     category_id = Category.query.filter_by(name=action)
+    #     product = Addproduct.query.filter_by(category_id=category_id.id)
+    #     return {'fulfillmentText': product.name + url_for('product',id=product.id)}
 
     return {'fulfillmentText':'Default'}
 
