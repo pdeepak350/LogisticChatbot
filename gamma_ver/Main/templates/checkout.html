@@ -67,7 +67,13 @@
                                                         </div>
                                                     </div>
 
-                                                    <a class="far fa-trash-alt table-p__delete-link" href="{{url_for('deleteitem',id=product.id)}}"></a>
+                                                    <form action="{{url_for('deleteitem', id=product.id)}}" method="POST">
+                                                        <td>
+                                                            <div class="table-p__del-wrap">
+                                                                <button class="far fa-trash-alt table-p__delete-link" type="submit"></button>
+                                                            </div>
+                                                        </td>
+                                                    </form>
                                                 </div>
                                                 {% endfor %}
                                             </div>
