@@ -854,7 +854,7 @@
 
                                                     <a class="aspect aspect--bg-grey aspect--square u-d-block" href="{{url_for('product',id=product.id)}}">
 
-                                                        <img class="aspect__img" src="{{url_for('static',filename='images/dell_laptop1.jpg')}}" alt=""></a>
+                                                        <img class="aspect__img" src="{{url_for('static',filename='img/'+product.image1)}}" alt=""></a>
                                                     <div class="product-m__quick-look">
 
                                                         <a class="fas fa-search" data-modal="modal" data-modal-id="#quick-look" data-tooltip="tooltip" data-placement="top" title="Quick Look"></a></div>
@@ -865,7 +865,7 @@
                                                         <a href="{{url_for('product',id=product.id)}}">{{product.name}}</a></div>
 
                                                     <div class="product-m__price">{{product.price}}</div>
-                                                    <div class="product-m__hover">images/dell_laptop1.jpg
+                                                    <div class="product-m__hover">
                                                         <div class="product-m__preview-description">
 
                                                             <span>{{product.desc}}</span></div>

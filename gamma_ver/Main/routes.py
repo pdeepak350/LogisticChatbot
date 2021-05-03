@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, flash, session, current_app
 from flask_login import login_user,login_required,current_user,logout_user
 from .models import Admin, Cart, Merchant, User, Category, Addproduct, Delivery, Shipment
-from .forms import RegistrationForm, LoginForm, Addproducts
+from .forms import RegistrationForm, LoginForm, Addproducts, tracking
 from Main import app, db, bcrypt, login_manager, photos
 from sqlalchemy.sql import text
 import os
@@ -387,6 +387,60 @@ def getCart():
             flash(f'no items in cart', 'error')
             return redirect(url_for('shop'))
 
+# Route to update cart
+# When any item in cart to be updated (only color and quantity can be updated )
+# The page returns id for that cart item for updatation
+@app.route('/updatecart/<int:code>', methods=['GET', 'POST'])
+def updatecart(code):
+    if request.method =="POST":
+        quantity = request.form.get('quantity')
+        cart = Cart.query.filter_by(id=code).first()
+        product = Addproduct.query.filter_by(id=cart.product_id).first()
+        blah = int(quantity) + int(cart.quantity)
+        try:
+            if blah <= product.stock:
+                cart.quantity = quantity
+                db.session.commit()
+                flash('Item is updated!','success')
+                return redirect(url_for('getCart'))
+            else:
+                flash('Exceeded stock limit','error')
+                return redirect(url_for('getCart'))
+        except Exception as e:
+            print(e)
+            flash('updated cart', 'success')
+            return redirect(url_for('getCart'))
+
+# Route to delete cart items
+# Page will return id of cart element to be deleted
+@app.route('/deleteitem/<int:id>', methods=['GET', 'POST'])
+def deleteitem(id):
+    if request.method=="POST":
+        cart = Cart.query.filter_by(id=id).first()
+        try:
+            db.session.delete(cart)
+            db.session.commit()
+            flash(f'deleted item', 'success')
+            return redirect(url_for('getCart'))
+        except Exception as e:
+            print(e)
+            return redirect(url_for('getCart'))
+
+# Route to clear cart
+@app.route('/clearcart')
+def clearcart():
+    try:
+        user_id = session['_user_id']
+        cart = Cart.query.order_by(text(user_id)).all()
+        for i in cart:
+            db.session.delete(i)
+            db.session.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        flash(f'Order Placed', 'success')
+        return redirect(url_for('shop'))
+
 @app.route('/checkout')
 def checkout():
     #DictItems = {product_id:{'name':product.name,'price':float(product.price),'discount':product.discount,'color':color,'quantity':quantity,'image':product.image1, 'colors':product.color}}
@@ -447,7 +501,7 @@ def orderplaced():
                     delivery_reg_time = datetime.now().date()
                     delivery_est_date = datetime.now().date() + timedelta(7)
                     delivery_id = '#'+ran_gen()
-                    delivery = Delivery(User_id=i.user_id ,product_id=product_id, merchant_id=merchant.merchant_id, quantity=i.quantity ,Delivery_ID=delivery_id ,Delivery_Reg_Time=delivery_reg_time ,Delivery_Est_Date=delivery_est_date,Delivery_Sender=merchant.merchant_name,Delivery_Sender_Phone=merchant.merchant_phone, From_Address= merchant.merchant_address, Delivery_Recipient = user.name, Delivery_Recipient_Phone=phone, To_Address=address, Status_Reason='Order Placed')
+                    delivery = Delivery(User_id=i.user_id ,product_id=product_id, merchant_id=merchant.merchant_id, quantity=i.quantity ,Delivery_ID=delivery_id ,Delivery_Reg_Time=delivery_reg_time ,Delivery_Est_Date=delivery_est_date,Delivery_Sender=merchant.merchant_name,Delivery_Sender_Phone=merchant.merchant_phone, From_Address= merchant.merchant_address, Delivery_Recipient = user.fname + ' ' + user.lname, Delivery_Recipient_Phone=phone, To_Address=address, Status_Reason='Order Placed')
                     db.session.add(delivery)
                     db.session.commit()
                     ship_id = '#'+ran_gen(size=9)
@@ -460,60 +514,6 @@ def orderplaced():
             print(e)
         finally:
             return redirect(url_for('clearcart'))
-    
-# Route to update cart
-# When any item in cart to be updated (only color and quantity can be updated )
-# The page returns id for that cart item for updatation
-@app.route('/updatecart/<int:code>', methods=['GET', 'POST'])
-def updatecart(code):
-    if request.method =="POST":
-        quantity = request.form.get('quantity')
-        cart = Cart.query.filter_by(id=code).first()
-        product = Addproduct.query.filter_by(id=cart.product_id).first()
-        blah = int(quantity) + int(cart.quantity)
-        try:
-            if blah <= product.stock:
-                cart.quantity = quantity
-                db.session.commit()
-                flash('Item is updated!','success')
-                return redirect(url_for('getCart'))
-            else:
-                flash('Exceeded stock limit','error')
-                return redirect(url_for('getCart'))
-        except Exception as e:
-            print(e)
-            flash('updated cart', 'success')
-            return redirect(url_for('getCart'))
-
-# Route to delete cart items
-# Page will return id of cart element to be deleted
-@app.route('/deleteitem/<int:id>', methods=['GET', 'POST'])
-def deleteitem(id):
-    if request.method=="POST":
-        cart = Cart.query.filter_by(id=id).first()
-        try:
-            db.session.delete(cart)
-            db.session.commit()
-            flash(f'deleted item', 'success')
-            return redirect(url_for('getCart'))
-        except Exception as e:
-            print(e)
-            return redirect(url_for('getCart'))
-
-# Route to clear cart
-@app.route('/clearcart')
-def clearcart():
-    try:
-        user_id = session['_user_id']
-        cart = Cart.query.order_by(text(user_id)).all()
-        for i in cart:
-            db.session.delete(i)
-            db.session.commit()
-    except Exception as e:
-        print(e)
-    finally:
-        flash(f'Order Placed', 'success')
-        return redirect(url_for('shop'))
 
 @app.route('/orders')
 def orders():
@@ -529,14 +529,14 @@ def orders():
         for i in delivery:
             temp_delivery = {}
             product=Addproduct.query.filter_by(id=i.product_id).first()
-            shipment = Shipment.query.filter_by(Delivery_ID=i.Delivery_ID)
+            shipment = Shipment.query.filter_by(Delivery_ID=i.Delivery_ID).first()
             id = str(i.product_id) + '_' + str(i.Delivery_ID)
             discount = (product.discount/100) * float(product.price)
             subtotal += float(product.price) * int(i.quantity)
             subtotal -= discount
             tax =("%.2f" %(.06 * float(subtotal)))
             grandtotal = float("%.2f" % (1.06 * subtotal))
-            temp_delivery = {id:{'id':i.Delivery_ID, 'name':product.name, 'price':float(subtotal),'qunatity':i.quantity,'placed_on':i.Delivery_Reg_Time ,'est_date':i.Delivery_Est_Date , 'address':i.To_Address, 'image':product.image1, 'shipment':shipment.Shipment_Note} }
+            temp_delivery = {id:{'id':i.Delivery_ID, 'name':product.name, 'price':float(subtotal),'quantity':i.quantity,'placed_on':i.Delivery_Reg_Time ,'est_date':i.Delivery_Est_Date , 'address':i.To_Address, 'image':product.image1, 'shipment':shipment.Shipment_Note} }
             delivery_items = Merge(delivery_items, temp_delivery)
     return render_template('dash-my-order.html', user=user, delivery_items=delivery_items)
 

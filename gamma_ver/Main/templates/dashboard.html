@@ -126,12 +126,10 @@
                                                         <td>
                                                             <div class="dash__table-img-wrap">
 
-                                                                <img class="u-img-fluid" src="{{url_for('static',filename='img/'+product.image)}}" alt=""></div>
+                                                                <img class="u-img-fluid" src="{{url_for('static',filename='img/'+delivery.image)}}" alt=""></div>
                                                         </td>
                                                         <td>
                                                             <div class="dash__table-total">
-
-                                                                <span>{{grandtotal}}</span>
                                                                 <div class="dash__link dash__link--brand">
 
                                                                     <a href="{{url_for('track_order', delivery_id=delivery.id)}}">MANAGE</a></div>
@@ -141,6 +139,16 @@
                                                     {% endfor %}
                                                 </tbody>
                                             </table>
+                                        </div>
+                                        <div class="route-box">
+                                            <div class="route-box__g1">
+                                                <a class="route-box__link" href="{{url_for('shop')}}"><i class="fas fa-long-arrow-alt-left"></i>
+                                                    <span>CONTINUE SHOPPING</span>
+                                                </a>
+                                            </div>
+                                            <div class="route-box__g2">
+                                                <h3>Grand Total:  <span>{{grandtotal}}</span></h3>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -168,7 +176,7 @@
 
                                 <span class="gl-modal-text">I have read and understood</span>
 
-                                <a class="d_modal__link" href="{{url_for('profile')}}">Ludus Privacy Policy</a>
+                                <a class="d_modal__link" href="dashboard.html">Ludus Privacy Policy</a>
                             </div>
                             <div class="gl-modal-btn-group">
 

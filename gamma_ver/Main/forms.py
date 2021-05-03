@@ -5,16 +5,14 @@ from flask_wtf.file import FileAllowed,FileField,FileRequired
 class RegistrationForm(Form):
     fname = StringField('First Name*', [validators.Length(min=2, max=25)])
     lname = StringField('Last Name*', [validators.Length(min=2, max=25)])
-    email = StringField(
-        'Email Address*', [validators.Length(min=6, max=35), validators.Email()])
+    email = StringField('Email Address*', [validators.Length(min=6, max=35), validators.Email()])
     password = PasswordField('Password*', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match')])
     confirm = PasswordField('Confirm Password')
 
 # Login Form for login page with following fields
 #Validators are used to validate data submitted by user and checks validations
 class LoginForm(Form):
-    email = StringField(
-        'Email Address', [validators.Length(min=6, max=35), validators.Email()])
+    email = StringField('Email Address', [validators.Length(min=6, max=35), validators.Email()])
     password = PasswordField('Password', [validators.DataRequired()])
 
 # Form to add product 
@@ -32,6 +30,10 @@ class Addproducts(Form):
     merchant_name = StringField('Merchant Name', [validators.DataRequired()])
     merchant_phone = StringField('Merchant Phone', [validators.DataRequired()])
     merchant_address = TextAreaField('Merchant Address',[validators.DataRequired()])
+
+class tracking(Form):
+    orderid = StringField('Order ID', validators.DataRequired())
+    email = StringField('Email Address*', [validators.Length(min=6, max=35), validators.Email()])
 
 class Delivery(Form):
     pass

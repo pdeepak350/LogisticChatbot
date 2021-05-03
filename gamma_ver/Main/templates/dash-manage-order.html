@@ -21,7 +21,7 @@
                                         <a href="{{url_for('index')}}">Home</a></li>
                                     <li class="is-marked">
 
-                                        <a href="{{url_for('track_order')}}">My Account</a></li>
+                                        <a href="{{url_for('profile')}}">My Account</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -218,7 +218,7 @@
                                                     <div class="description__container">
                                                         <div class="description__img-wrap">
 
-                                                            <img class="u-img-fluid" src="images/product/electronic/product3.jpg" alt=""></div>
+                                                            <img class="u-img-fluid" src="{{url_for('static',filename='img/'+delivery.image)}}" alt=""></div>
                                                         <div class="description-title">{{delivery.name}}</div>
                                                     </div>
                                                     <div class="description__info-wrap">
@@ -283,6 +283,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
