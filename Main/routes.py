@@ -644,8 +644,8 @@ def results():
     queryResult = req.get('queryResult')
     actions = ["product.search", "item.add"]
     if queryResult['action'] in actions:
-        for key,value in queryResult['parameters']:
-            return {'fulfillmentText': value}
+        for key,value in queryResult['parameters'].items():
+            return {'fulfillmentText': value+"is available to add"}
     # products = Category.query.all()
     # if action == "product.search":
     #     category_id = Category.query.filter_by(name=action)
