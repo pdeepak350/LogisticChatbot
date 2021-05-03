@@ -26,7 +26,7 @@
 
                                             <span class="u-c-brand">$1050.00</span></span>
 
-                                        <a class="shop-now-link btn--e-brand" href="shop.html">SHOP NOW</a></div>
+                                        <a class="shop-now-link btn--e-brand" href="{{url_for('shop')}}">SHOP NOW</a></div>
                                 </div>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
 
                                             <span class="u-c-brand">$380.00</span></span>
 
-                                        <a class="shop-now-link btn--e-brand" href="shop.html">SHOP NOW</a></div>
+                                        <a class="shop-now-link btn--e-brand" href="{{url_for('shop')}}">SHOP NOW</a></div>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +68,7 @@
 
                                             <span class="u-c-brand">$550.00</span></span>
 
-                                        <a class="shop-now-link btn--e-brand" href="shop.html">SHOP NOW</a></div>
+                                        <a class="shop-now-link btn--e-brand" href="{{url_for('shop')}}">SHOP NOW</a></div>
                                 </div>
                             </div>
                         </div>
@@ -104,35 +104,31 @@
                         <div class="row">
                             <div class="col-lg-5 col-md-5 u-s-m-b-30">
 
-                                <a class="collection" href="shop.html">
+                                <a class="collection" href="{{url_for('shop')}}">
                                     <div class="aspect aspect--bg-grey aspect--square">
 
-
-                                        <img class="aspect__img collection__img" src="{{url_for('static', filename='images/')}}" alt=""></div>
-
-                                        <img class="aspect__img collection__img" src="{{url_for('static', filename='images/deals1.jpg')}}" alt=""></div>
-
+                                        <img class="aspect__img collection__img" src="{{url_for('static',filename='images/deals1.jpg')}}" alt=""></div>
                                 </a></div>
                             <div class="col-lg-7 col-md-7 u-s-m-b-30">
 
-                                <a class="collection" href="shop.html">
+                                <a class="collection" href="{{url_for('shop')}}">
                                     <div class="aspect aspect--bg-grey aspect--1286-890">
 
-                                        <img class="aspect__img collection__img" src="images/collection/coll-2.jpg" alt=""></div>
+                                        <img class="aspect__img collection__img" src="{{url_for('static',filename='images/deals2.jpg')}}" alt=""></div>
                                 </a></div>
                             <div class="col-lg-7 col-md-7 u-s-m-b-30">
 
-                                <a class="collection" href="shop.html">
+                                <a class="collection" href="{{url_for('shop')}}">
                                     <div class="aspect aspect--bg-grey aspect--1286-890">
 
-                                        <img class="aspect__img collection__img" src="images/collection/coll-3.jpg" alt=""></div>
+                                        <img class="aspect__img collection__img" src="{{url_for('static',filename='images/deals3.jpg')}}" alt=""></div>
                                 </a></div>
                             <div class="col-lg-5 col-md-5 u-s-m-b-30">
 
-                                <a class="collection" href="shop.html">
+                                <a class="collection" href="{{url_for('shop')}}">
                                     <div class="aspect aspect--bg-grey aspect--square">
 
-                                        <img class="aspect__img collection__img" src="images/collection/coll-4.jpg" alt=""></div>
+                                        <img class="aspect__img collection__img" src="{{url_for('static',filename='images/deals4.jpg')}}" alt=""></div>
                                 </a></div>
                         </div>
                     </div>

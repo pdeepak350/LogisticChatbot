@@ -102,7 +102,12 @@
                                                             <div>
                                                                 <div class="dash__link dash__link--brand">
 
-                                                                    <a href="{{url_for('track_order', delivery_id=delivery.id)}}">MANAGE</a></div>
+                                                                    <form class="dash-track-order" action="{{url_for('track_order')}}" method="POST" >
+                                                                        <input id="order-id" name="order-id" type="hidden" value="{{delivery.id}}">
+                                                                        <div class="dash__link dash__link--brand">
+                                                                            <button class="primary-btn btn-warning" type='submit' href="{{url_for('track_order')}}">MANAGE</button>
+                                                                        </div>
+                                                                    </form>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -130,9 +135,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {% endfor %}
-                                            </div>
                                         </div>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
