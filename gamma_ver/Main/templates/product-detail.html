@@ -23,7 +23,7 @@
                                         <a href="{{url_for('index')}}">Home</a></li>
                                     <li class="is-marked">
 
-                                        <a href="{{url_for('shop')}}">{{product.name}}</a></li>
+                                        <a href="{{url_for('product',id=product.id)}}">{{product.name}}</a></li>
                                 </ul>
                             </div>
                             <!--====== End - Product Breadcrumb ======-->
@@ -207,10 +207,10 @@
                                     <ul class="pd-breadcrumb__list">
                                         <li class="has-separator">
 
-                                            <a href="{{url_for('index')}}">Home</a></li>
+                                            <a href="index.hml">Home</a></li>
                                         <li class="is-marked">
 
-                                            <a href="{{url_for('shop')}}">{{product.name}}</a></li>
+                                            <a href="shop.html">{{product.name}}</a></li>
                                     </ul>
                                 </div>
                                 <!--====== End - Product Breadcrumb ======-->
@@ -290,7 +290,7 @@
 
                                             <span class="pd-detail__click-wrap"><i class="far fa-heart u-s-m-r-6"></i>
 
-                                                <a href="{{url_for('login')}}">Add to Wishlist</a>
+                                                <a href="signin.html">Add to Wishlist</a>
 
                                                 <span class="pd-detail__click-count">(222)</span></span></div>
                                     </div>

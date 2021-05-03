@@ -73,12 +73,12 @@ class Cart(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
 
 class Delivery(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     User_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('addproduct.id'), nullable=False)
     merchant_id = db.Column(db.Integer, db.ForeignKey('merchant.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    Delivery_ID = db.Column(db.String(8), primary_key=True, nullable=False)
+    Delivery_ID = db.Column(db.String(8), nullable=False)
     Delivery_Reg_Time = db.Column(db.Date,auto_now_add=True, nullable=False)
     Delivery_Est_Date = db.Column(db.Date, nullable=False)
     Delivery_Sender = db.Column(db.String(45), db.ForeignKey('addproduct.merchant_name'), nullable=False)
