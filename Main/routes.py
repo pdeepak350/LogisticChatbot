@@ -644,7 +644,7 @@ def results():
 
     action = req.get('queryResult').get('action')
 
-    return {'fulfillmentText':'This is a response from webhook'}
+    return {'fulfillmentText':'Logistic Chatbott'}
 
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
