@@ -650,10 +650,6 @@ def results():
 
     return {'fulfillmentText':'Default'}
 
-<<<<<<< HEAD
-    return {'fulfillmentText':'Logistic Chatbott'}
-=======
->>>>>>> 380604d28083c06e29f37104cb7014a8833b690f
 
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
