@@ -642,7 +642,8 @@ def clearorder(delivery_id):
 def results():
     req = request.get_json(force=True)
     queryResult = req.get('queryResult')
-    if queryResult['action'] == "product.search":
+    actions = ["product.search", "item.add"]
+    if queryResult['action'] in actions:
         for key,value in queryResult['parameters']:
             return {'fulfillmentText': value}
     # products = Category.query.all()
