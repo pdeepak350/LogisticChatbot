@@ -244,19 +244,19 @@
                                                     <h2 class="dash__h2 u-s-m-b-8">Shipping Address</h2>
                                                     <h2 class="dash__h2 u-s-m-b-8">{{user.fname + user.lname}}</h2>
 
-                                                    <span class="dash__text-2">{{delivery.address}}</span>
+                                                    <span class="dash__text-2">{{delivery.t_address}}</span>
 
-                                                    <span class="dash__text-2">{{delivery.phone}}</span>
+                                                    <span class="dash__text-2">{{delivery.t_phone}}</span>
                                                 </div>
                                             </div>
                                             <div class="dash__box dash__box--bg-white dash__box--shadow dash__box--w">
                                                 <div class="dash__pad-3">
                                                     <h2 class="dash__h2 u-s-m-b-8">Billing Address</h2>
-                                                    <h2 class="dash__h2 u-s-m-b-8">{{user.fname + user.lname}}</h2>
+                                                    <h2 class="dash__h2 u-s-m-b-8">{{delivery.mname}}</h2>
 
-                                                    <span class="dash__text-2">{{delivery.address}}</span>
+                                                    <span class="dash__text-2">{{delivery.f_address}}</span>
 
-                                                    <span class="dash__text-2">{{delivery.phone}}</span>
+                                                    <span class="dash__text-2">{{delivery.f_phone}}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -277,7 +277,13 @@
                                                         <div class="manage-o__text-2 u-c-secondary">{{grandtotal}}</div>
                                                     </div>
 
-                                                    <span class="dash__text-2">By Cash on Delivery</span>
+                                                    <span class="dash__text-2">By Cash on Delivery</span><hr>
+
+                                                    <form action="{{url_for('clearorder', delivery_id=delivery.id)}}" method="post">
+                                                        <button class="route-box__link"><i class="fas fa-trash"></i>
+                                                            <span>CLEAR Order</span>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

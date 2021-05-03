@@ -477,7 +477,7 @@ def checkout():
         except Exception as e:
             print(e)
             flash(f'No items in Cart', 'error')
-            return redirect(url_for('shop'))
+            return redirect(url_for('profile'))
 
 def ran_gen( size=7 , chars=string.ascii_letters+string.digits):
     return ''.join(random.choice(chars) for x in range(size))
@@ -536,7 +536,7 @@ def orders():
             subtotal -= discount
             tax =("%.2f" %(.06 * float(subtotal)))
             grandtotal = float("%.2f" % (1.06 * subtotal))
-            temp_delivery = {id:{'id':i.Delivery_ID, 'name':product.name, 'price':float(subtotal),'quantity':i.quantity,'placed_on':i.Delivery_Reg_Time ,'est_date':i.Delivery_Est_Date , 'address':i.To_Address, 'image':product.image1, 'shipment':shipment.Shipment_Note} }
+            temp_delivery = {id:{'id':i.Delivery_ID, 'name':product.name, 'price':float(subtotal),'quantity':i.quantity,'placed_on':i.Delivery_Reg_Time ,'est_date':i.Delivery_Est_Date , 't_address':i.To_Address, 'image':product.image1, 'shipment':shipment.Shipment_Note} }
             delivery_items = Merge(delivery_items, temp_delivery)
     return render_template('dash-my-order.html', user=user, delivery_items=delivery_items)
 
@@ -548,17 +548,17 @@ def t_order():
         user =User.query.filter_by(email=session['email']).first()
         return render_template('dash-track-order.html', user=user)
 
-@app.route('/trackOrder/<string:delivery_id>', methods=['GET', 'POST'])
-def track_order(delivery_id):
+@app.route('/trackOrder', methods=['GET', 'POST'])
+def track_order():
     if 'email' not in session:
         return redirect(url_for('login'))
     else:
         if request.method == 'POST':
-            delivery_id = request.form.get['order-id']
+            delivery_id = request.form.get('order-id')
         delivery_items={}
         user =User.query.filter_by(email=session['email']).first()
         delivery = Delivery.query.filter_by(Delivery_ID=delivery_id).all()
-        shipment = Shipment.query.filter_by(Delivery_ID=delivery_id).all()
+        shipment = Shipment.query.filter_by(Delivery_ID=delivery_id).first()
         subtotal = 0
         grandtotal = 0
         for i in delivery:
@@ -570,10 +570,11 @@ def track_order(delivery_id):
             subtotal -= discount
             tax =("%.2f" %(.06 * float(subtotal)))
             grandtotal = float("%.2f" % (1.06 * subtotal))
-            temp_delivery = {id:{'id':i.Delivery_ID, 'name':product.name, 'price':float(product.price),'qunatity':i.quantity,'placed_on':i.Delivery_Reg_Time ,'est_date':i.Delivery_Est_Date , 'address':i.To_Address, 'image':product.image1, 'phone':i.Delivery_Recipient_Phone} }
+            temp_delivery = {id:{'id':i.Delivery_ID, 'name':product.name, 'price':float(product.price),'quantity':i.quantity,'placed_on':i.Delivery_Reg_Time ,'est_date':i.Delivery_Est_Date , 'image':product.image1, 't_address':i.To_Address, 't_phone':i.Delivery_Recipient_Phone, 'f_address':i.From_Address, 'f_phone':i.Delivery_Sender_Phone, 'mname':i.Delivery_Sender} }
             delivery_items = Merge(delivery_items, temp_delivery)
         
     return render_template('dash-manage-order.html', user=user, delivery_items=delivery_items, tax=tax, grandtotal=grandtotal, subtotal=subtotal, shipment=shipment)
+
 
 @app.route('/profile')
 def profile():
@@ -604,6 +605,21 @@ def profile():
         return render_template('dashboard.html', user=user, delivery_items=delivery_items, grandtotal=grandtotal, admin=True)
     else:
         return render_template('dashboard.html', user=user, delivery_items=delivery_items, grandtotal=grandtotal)
+
+@app.route('/cancelorder/<string:delivery_id>', methods=['GET','POST'])
+def clearorder(delivery_id):
+    try:
+        shipment = Shipment.query.filter_by(Delivery_ID=delivery_id).first()
+        delivery = Delivery.query.filter_by(Delivery_ID=delivery_id).first()
+        db.session.delete(shipment)
+        db.session.commit()
+        db.session.delete(delivery)
+        db.session.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        flash(f'Order Placed', 'success')
+        return redirect(url_for('profile'))
 
 # @app.route('/merchantprofile')
 # def merchantprofile():

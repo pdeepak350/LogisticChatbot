@@ -91,19 +91,14 @@
                                             <h1 class="dash__h1 u-s-m-b-14">Track your Order</h1>
 
                                             <span class="dash__text u-s-m-b-30">To track your order please enter your Order ID in the box below and press the "Track" button. This was given to you on your receipt and in the confirmation email you should have received.</span>
-                                            {% from "_formhelpers.html" import render_field %}
-                                            <form class="dash-track-order" action="{{url_for('track_order', delivery_id=order-id)}}" method="POST" >
+                                            <form class="dash-track-order" action="{{url_for('track_order')}}" method="POST" >
                                                 <div class="gl-inline">
                                                     <div class="u-s-m-b-30">
 
                                                         <label class="gl-label" for="order-id">Order ID *</label>
 
                                                         <input class="input-text input-text--primary-style" name="order-id" type="text" id="order-id" placeholder="Found in your confirmation email"></div>
-                                                    <div class="u-s-m-b-30">
 
-                                                        <label class="gl-label" for="track-email">Email *</label>
-
-                                                        <input class="input-text input-text--primary-style" type="text" id="track-email" placeholder="Email you used during checkout"></div>
                                                 </div>
 
                                                 <button class="btn btn--e-brand-b-2" type="submit">TRACK</button>
