@@ -3,3 +3,6 @@ secretkey
 LogisticChatbot.sock
 __pycache__/*
 *.pyc
+.env
+*.json
+temp

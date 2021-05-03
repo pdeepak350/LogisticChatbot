@@ -638,13 +638,22 @@ def clearorder(delivery_id):
 #     if admin is None:
 #         return redirect(url_for('index'))
 #     return render_template('adminprofile.html')
-    
+
 def results():
     req = request.get_json(force=True)
-
     action = req.get('queryResult').get('action')
+    products = Category.query.all()
+    if action in products:
+        category_id = Category.query.filter_by(name=action)
+        product = Addproduct.query.filter_by(category_id=category_id.id)
+        return {'fulfillmentText': product.name + url_for('product',id=product.id)}
 
+    return {'fulfillmentText':'Default'}
+
+<<<<<<< HEAD
     return {'fulfillmentText':'Logistic Chatbott'}
+=======
+>>>>>>> 380604d28083c06e29f37104cb7014a8833b690f
 
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
