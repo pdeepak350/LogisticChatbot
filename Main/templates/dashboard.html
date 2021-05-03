@@ -1,0 +1,194 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+{% block title %}Home{% endblock title %}
+{% block content %}
+        <!--====== App Content ======-->
+        <div class="app-content">
+
+            <!--====== Section 1 ======-->
+            <div class="u-s-p-y-60">
+
+                <!--====== Section Content ======-->
+                <div class="section__content">
+                    <div class="container">
+                        <div class="breadcrumb">
+                            <div class="breadcrumb__wrap">
+                                <ul class="breadcrumb__list">
+                                    <li class="has-separator">
+
+                                        <a href="{{url_for('index')}}">Home</a></li>
+                                    <li class="is-marked">
+
+                                        <a href="{{url_for('profile')}}">My Account</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--====== End - Section 1 ======-->
+
+
+            <!--====== Section 2 ======-->
+            <div class="u-s-p-b-60">
+
+                <!--====== Section Content ======-->
+                <div class="section__content">
+                    <div class="dash">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-12">
+
+                                    <!--====== Dashboard Features ======-->
+                                    <div class="dash__box dash__box--bg-white dash__box--shadow u-s-m-b-30">
+                                        <div class="dash__pad-1">
+
+                                            <span class="dash__text u-s-m-b-16">Hello, {{user.fname +' '+user.lname}}</span>
+                                            <ul class="dash__f-list">
+                                                <li>
+
+                                                    <a class="dash-active" href="{{url_for('profile')}}">Manage My Account</a></li>
+                                                <li>
+
+                                                    <a href="{{url_for('profile')}}">My Profile</a></li>
+                                                <li>
+
+                                                    <a href="{{url_for('t_order')}}">Track Order</a></li>
+                                                <li>
+
+                                                    <a href="{{url_for('orders')}}">My Orders</a></li>
+                                                {% if merchant %}
+                                                    <li>
+
+                                                        <a href="{{url_for('addproduct')}}">Add Product</a></li>
+                                                    <li>
+
+                                                        <a href="{{url_for('merchant')}}">Manage Product</a></li>
+                                                {% elif admin %}
+                                                    <li>
+
+                                                        <a href="{{url_for('addproduct')}}">Add Product</a></li>
+                                                    <li>
+
+                                                        <a href="{{url_for('addcat')}}">Add Category</a></li>
+                                                    <li>
+
+                                                        <a href="{{url_for('merchant')}}">Manage Product</a></li>
+                                                    <li>
+
+                                                        <a href="{{url_for('categories')}}">Manage Category</a></li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!--====== End - Dashboard Features ======-->
+                                </div>
+                                <div class="col-lg-9 col-md-12">
+                                    <div class="dash__box dash__box--shadow dash__box--radius dash__box--bg-white u-s-m-b-30">
+                                        <div class="dash__pad-2">
+                                            <h1 class="dash__h1 u-s-m-b-14">Manage My Account</h1>
+
+                                            <span class="dash__text u-s-m-b-30">From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</span>
+                                            <div class="row">
+                                                <div class="col-lg-4 u-s-m-b-30">
+                                                    <div class="dash__box dash__box--bg-grey dash__box--shadow-2 u-h-100">
+                                                        <div class="dash__pad-3">
+                                                            <h2 class="dash__h2 u-s-m-b-8">PERSONAL PROFILE</h2>
+
+                                                            <span class="dash__text">{{user.fname +' '+ user.lname}}</span>
+
+                                                            <span class="dash__text">{{user.email}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dash__box dash__box--shadow dash__box--bg-white dash__box--radius">
+                                        <h2 class="dash__h2 u-s-p-xy-20">RECENT ORDERS</h2>
+                                        <div class="dash__table-wrap gl-scroll">
+                                            <table class="dash__table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Order #</th>
+                                                        <th>Placed On</th>
+                                                        <th>Items</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for key,delivery in delivery_items.items() %}
+                                                    <tr>
+                                                        <td>{{delivery.id}}</td>
+                                                        <td>{{delivery.placed_on}}</td>
+                                                        <td>
+                                                            <div class="dash__table-img-wrap">
+
+                                                                <img class="u-img-fluid" src="{{url_for('static',filename='img/'+delivery.image)}}" alt=""></div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="dash__table-total">
+                                                                <div class="dash__link dash__link--brand">
+
+                                                                    <a href="{{url_for('track_order', delivery_id=delivery.id)}}">MANAGE</a></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="route-box">
+                                            <div class="route-box__g1">
+                                                <a class="route-box__link" href="{{url_for('shop')}}"><i class="fas fa-long-arrow-alt-left"></i>
+                                                    <span>CONTINUE SHOPPING</span>
+                                                </a>
+                                            </div>
+                                            <div class="route-box__g2">
+                                                <h3>Grand Total:  <span>{{grandtotal}}</span></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--====== End - Section Content ======-->
+            </div>
+            <!--====== End - Section 2 ======-->
+        </div>
+        <!--====== End - App Content ======-->
+
+                <!--====== Modal Section ======-->
+
+
+        <!--====== Unsubscribe or Subscribe Newsletter ======-->
+        <div class="modal fade" id="dash-newsletter">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal--shadow">
+                    <div class="modal-body">
+                        <form class="d-modal__form">
+                            <div class="u-s-m-b-15">
+                                <h1 class="gl-modal-h1">Newsletter Subscription</h1>
+
+                                <span class="gl-modal-text">I have read and understood</span>
+
+                                <a class="d_modal__link" href="dashboard.html">Ludus Privacy Policy</a>
+                            </div>
+                            <div class="gl-modal-btn-group">
+
+                                <button class="btn btn--e-brand-b-2" type="submit">SUBSCRIBE</button>
+
+                                <button class="btn btn--e-grey-b-2" type="button" data-dismiss="modal">CANCEL</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--====== Unsubscribe or Subscribe Newsletter ======-->
+        <!--====== End - Modal Section ======-->
+{% endblock content %}

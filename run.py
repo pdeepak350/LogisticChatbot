@@ -1,5 +1,4 @@
-#This will import the flask app from __init__.py of ecom folder.
-from ecom import app
+from Main import app,manager
 if __name__ == '__main__':
-	#You can set debug=True to start debugging 
-    app.run()
+    app.run(host="127.0.0.1", port='8000',debug=True, use_reloader=False)
+    #manager.run()

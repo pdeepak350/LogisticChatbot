@@ -1,0 +1,143 @@
+{% extends "layout.html" %}
+<!-- Page to show information about single product -->
+{% block head %}
+{{ super() }}
+{% endblock head%}
+{% block title %}Product Detail{% endblock title %}
+{% block content %}
+
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+      <div class="col-first">
+        <h1>Product Details Page</h1>
+        <nav class="d-flex align-items-center">
+          <a href="{{ url_for('home') }}">Home<span class="lnr lnr-arrow-right"></span></a>
+          <a href="{{url_for('allproduct')}}">Products<span class="lnr lnr-arrow-right"></span></a>
+          <a href="{{url_for('single',id=product.id)}}">Product-Details<span class="lnr"></span></a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="product_image_area">
+  <div class="container">
+    <div class="row s_product_inner">
+      <div class="col-lg-6">
+        <div class="s_Product_carousel">
+          <div class="single-prd-item">
+            <img class="img-fluid" src="{{url_for('static',filename='img/'+product.image1)}}" alt="">
+          </div>
+          <div class="single-prd-item">
+            <img class="img-fluid" src="{{url_for('static',filename='img/'+product.image2)}}" alt="">
+          </div>
+          <div class="single-prd-item">
+            <img class="img-fluid" src="{{url_for('static',filename='img/'+product.image3)}}" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 offset-lg-1">
+        <div class="s_product_text">
+          <h3>{{product.name}}</h3>
+          <h2>{{product.price}}</h2>
+          <ul class="list">
+            <li><a href="#"><span>Availability</span>:{{product.stock}}</a></li>
+          </ul>
+          <p>{{product.desc}}</p>
+          <hr>
+          <form action="{{url_for('AddCart')}}" method="post">
+            <div class="product_count">
+              <label for="quantity">Quantity:</label>
+              <input type="number" name="quantity" value="1" min="1" max="{{product.stock}}" title="Quantity:" class="input-text qty">
+            </div>
+            <div class="card_area d-flex align-items-center">
+              {% set colors = product.color.split(',') %}
+              <label for="colors">Colors: </label>
+                  <select name="colors" id="colors">
+                      {% for color in colors %}
+                      {% set col = color.split(':') %}
+                      <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                      {% endfor %}
+                  </select>
+            </div>
+            <hr>
+            <div class="card_area d-flex align-items-center">
+              <input type="hidden" name="product_id" value="{{product.id}}">
+              <button class="primary-btn btn-warning" type="submit">Add to Cart</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="product_description_area">
+  <div class="container">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Description</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <p>{{product.desc}}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- <div class="container mt-2">
+	<div class="row">
+		<div class="col-md-6" id="first_image">
+			<img src="{{url_for('static',filename='img/'+product.image1)}}" width="400" height="400">
+		</div>
+		<div class="col-md-6">
+			<h5><i>Product Name : </i>{{product.name}}</h5>
+			<hr>
+			<p>In Stock : {{product.stock}}</p>
+			<p>Product Price : {{product.price}}</p>
+			{% if product.discount >0 %}
+				<p>Discount Price: {{product.price*product.discount/100}}</p>
+			{% endif %}
+			<b>Product Description</b>
+			<p>{{product.desc}}</p>
+			<hr>
+			      <form action="{{url_for('AddCart')}}" method="post">
+                <input type="hidden" name="product_id" value="{{product.id}}">
+                <button type="submit" class="btn btn-warning">Add to Cart</button>
+                <label for="quantity">Quantity: </label>
+                <input type="number" name="quantity" value="1" min="1" max="{{product.stock}}">
+                {% set colors = product.color.split(',') %}
+                <label for="colors">Colors: </label>
+                <select name="colors" id="colors">
+                    {% for color in colors %}
+                    {% set col = color.split(':') %}
+                    <option value="{{col[0]}}">{{col[0] | capitalize }}</option>
+                    {% endfor %}
+                </select>
+              </form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 mt-3" id="all_image">
+			<img src="{{url_for('static',filename='img/'+product.image1)}}" alt="{{product.name}}" width="120" height="120" class="p-3">
+			<img src="{{url_for('static',filename='img/'+product.image2)}}" alt="{{product.name}}" width="120" height="120" class="p-3">
+			<img src="{{url_for('static',filename='img/'+product.image3)}}" alt="{{product.name}}" width="120" height="120" class="p-3">
+		</div>
+	</div>
+</div> -->
+<script>
+	var first_image=document.getElementById('first_image');
+	var all_image=document.getElementById('all_image').getElementsByTagName('img');
+	for(var i=0;i<all_image.length;i++){
+		all_image[i].addEventListener('click',full_image);
+	}
+	function full_image(){
+		var ImageSRC=this.getAttribute('src');
+		first_image.innerHTML="<img src="+ ImageSRC +" width='400' height='400'>";
+	}
+</script>
+{% endblock content%}
