@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash, session, current_app
+from flask import render_template, request, redirect, url_for, flash, session, current_app, jsonify, make_response, Flask
 from flask_login import login_user,login_required,current_user,logout_user
 from .models import Admin, Cart, Merchant, User, Category, Addproduct, Delivery, Shipment
 from .forms import RegistrationForm, LoginForm, Addproducts, tracking
@@ -639,3 +639,13 @@ def clearorder(delivery_id):
 #         return redirect(url_for('index'))
 #     return render_template('adminprofile.html')
     
+def results():
+    req = request.get_json(force=True)
+
+    action = req.get('queryResult').get('action')
+
+    return {'fulfillmentText':'This is a response from webhook'}
+
+@app.route('/webhook', methods=['GET', 'POST'])
+def webhook():
+    return make_response(jsonify(results()))
