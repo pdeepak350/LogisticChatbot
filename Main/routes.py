@@ -8,7 +8,9 @@ import os
 import random
 import string
 from datetime import datetime, timedelta
+from flask_assisant import Assistant, ask, tell
 
+assist = Assistant(app, route='/webhook')
 # Route for user and admin to home page
 @app.route("/")
 @app.route("/index")
@@ -650,7 +652,10 @@ def results():
     req = request.get_json(force=True)
     queryResult = req.get('queryResult')
     if queryResult['action'] == "product.search":
-        return {'fulfillmentText': value+" is available to add"}
+        product = queryResult['parameters']['product']
+        category_id = Category.query.filter_by(name = product)
+        product = Addproduct.query.filter_by(category_id=category_id.id).first()
+        tell = url_for('product', id=product.id)
     elif queryResult['action'] == "cart_check":
         return {'fulfillmentText': "visit "+value+" to check items you have added"}
     elif queryResult['action'] == "check_out":   
@@ -697,7 +702,7 @@ def results():
         return {'fulfillment' : "Your order "+product+" is successfully edited"}
     elif queryResult['action'] == "special_offers":
         return {'fulfillment' : "The product "+product+" is on offer for you"}
-        
+
 
     return {'fulfillmentText':'Default'}
 
@@ -705,4 +710,3 @@ def results():
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
     return make_response(jsonify(results()))
-            
