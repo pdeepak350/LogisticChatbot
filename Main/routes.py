@@ -673,12 +673,12 @@ def results():
             category_id = Category.query.filter_by(name = product).first()
             product = Addproduct.query.filter_by(category_id=category_id.id).first()
             cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first() 
+            return {'fulfillment' : "1"}
             if cart is None and quantity <= product.stock:
                 addcart = Cart(user_id=user_id, product_id=product.id, quantity=quantity)
                 db.session.add(addcart)
                 db.session.commit()  
-                return {'fulfillment' : "added to null cart"}
-                      
+                                     
             else:
                 cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
                 product = Addproduct.query.filter_by(id=product.id).first()
@@ -687,10 +687,9 @@ def results():
                 ct.quantity = ct.quantity + quantity
                 if ct.quantity <= product.stock:
                     db.session.commit()
-                return {'fulfillment' : "added to cart"}
             return {'fulfillment' : "The product "+value+" is added to your cart"}
         except Exception as e:
-            return {'fulfillment' : e}
+            return {'fulfillment' : "The product is not available"}
 
     elif queryResult['action'] == "item.remove":
         return {'fulfillment' : "The product "+value+" is removed to your cart"}
