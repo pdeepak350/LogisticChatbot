@@ -691,7 +691,6 @@ def results():
             return {'fulfillment' : "The product is not available"}
 
     elif queryResult['action'] == "item.remove":
-<<<<<<< HEAD
         try:
             email =  queryResult['parameters']['email']
             user = user.query.filter_by(email = email).first()
@@ -699,34 +698,58 @@ def results():
             product = queryResult['parameters']['product']
             category_id = Category.query.filter_by(name = product).first()
             product = Addproduct.query.filter_by(category_id=category_id.id).first()
-            cart = Cart.query.filter_by(product_id = product.id).first()
+            cart = Cart.query.filter_by((user_id = user_id) &(product_id =product.id)).first()
             db.session.delete(cart)
             db.session.commit()
-            return {'fulfillment' : "The product "+value+" is removed to your cart"}
+            return {'fulfillment' : "The product "+product+" is removed to your cart"}
         except Exception as e:
             return {'fulfillment' : "Not able to remove the product"}
-
-=======
-        return {'fulfillment' : "The product "+product+" is removed to your cart"}
->>>>>>> 385cb290526f3a2932a42e51c005a080b071cd3e
+        
     elif queryResult['action'] == "order.cancel":
-        return {'fulfillment' : "Your order "+product+" is successfully cancelled"}
-    elif queryResult['action'] == "order.status":
-<<<<<<< HEAD
-        try:
+        try:    
             email =  queryResult['parameters']['email']
             user = user.query.filter_by(email = email).first()
             user_id = user.id
-            #need to show the order details for the given user_id
+            product = queryResult['parameters']['product']
+            category_id = Category.query.filter_by(name = product).first()
+            product = Addproduct.query.filter_by(category_id=category_id.id).first()
+            dele = Delivery.query.filter_by((user_id = user_id) &(product_id =product.id)).first()
+            db.session.delete(dele)
+            db.session.commit()
+            return {'fulfillment' : "Your order "+product+" is successfully cancelled"}
         except Exception as e:
-            return {'fulfillment' : "Not able to remove the product"}
+            return {'fulfillment' : "Not able to cancel the product"}
 
-        return {'fulfillment' : "You ordered "+value+" from our website"}
-=======
-        return {'fulfillment' : "You ordered "+product+" from our website"}
->>>>>>> 385cb290526f3a2932a42e51c005a080b071cd3e
+    elif queryResult['action'] == "order.details":
+        try:    
+            email =  queryResult['parameters']['email']
+            user = user.query.filter_by(email = email).first()
+            user_id = user.id
+            product = queryResult['parameters']['product']
+            category_id = Category.query.filter_by(name = product).first()
+            product = Addproduct.query.filter_by(category_id=category_id.id).first()
+            dele = Delivery.query.filter_by((user_id = user_id) &(product_id =product.id)).first()
+
+            #confused we have to show all the orders or only one product
+
+            return {'fulfillment' : "You ordered "+product+" from our website"}
+
     elif queryResult['action'] == "order.change":
-        return {'fulfillment' : "Your order "+product+" is successfully edited"}
+        email =  queryResult['parameters']['email']
+        user = user.query.filter_by(email = email).first()
+        user_id = user.id
+        product = queryResult['parameters']['product']
+        category_id = Category.query.filter_by(name = product).first()
+        product = Addproduct.query.filter_by(category_id=category_id.id).first()
+        quantity = queryResult['parameters']['n_quantity']
+        if quantity <= product.stock:
+            dele = Delivery.query.filter_by((user_id = user_id) &(product_id =product.id)).first()        
+            dele.quantity = quantity
+            db.session.commit()
+            return {'fulfillment' : "Your order "+product+" is successfully edited"}
+        else:
+            return {'fulfillment' : "Out of stock - can not update"}
+
     elif queryResult['action'] == "special_offers":
         return {'fulfillment' : "The product "+product+" is on offer for you"}
 
