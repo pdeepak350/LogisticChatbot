@@ -746,9 +746,11 @@ def results():
             dele = Delivery.query.filter_by((user_id = user_id) &(product_id =product.id)).first()        
             dele.quantity = quantity
             db.session.commit()
-            return {'fulfillment' : "Your order "+product+" is successfully edited"}
+            return {'fulfillment' : "Product name "+product+"\n"+"Delivery estimated  "+dele.Delivery_Est_Date+"\n"+
+                                    "Sender name"+dele.Delivery_Sender+"\n"+"Sender address "+dele.From_Address+"\n"+
+                                    "Reciver name "+dele.Delivery_Recipient+"\n"+"Shipping address "+dele.To_Address+"\n"}
         else:
-            return {'fulfillment' : "Out of stock - can not update"}
+            return {'fulfillment' : "Order not found"}
 
     elif queryResult['action'] == "special_offers":
         return {'fulfillment' : "The product "+product+" is on offer for you"}
