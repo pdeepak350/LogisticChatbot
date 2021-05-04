@@ -646,11 +646,11 @@ def clearorder(delivery_id):
     #  "cart": "",
    #   "product": "laptop"
    # },
-def results(id):
+def results():
     req = request.get_json(force=True)
     queryResult = req.get('queryResult')
     #if 'email' in session:
-    user_id = id
+    #user_id = id
     if queryResult['action'] == "product.search":
         return {'fulfillmentText': value+" is available to add"}
     elif queryResult['action'] == "cart_check":
@@ -663,30 +663,34 @@ def results(id):
         return {'fulfillment' : "free shipping is for "+value+" amount"}
     elif queryResult['action'] == "gift_card":
         return {'fulfillment' : "gift card of "+value+" amount is added on your account"}
-    elif queryResult['action']== "item.add":
-        for key,value in queryResult['parameters'].items():
-            try:
-                if key == "quantity":
-                    quantity = value
-                if key == "product":
-                    category_id = Category.query.filter_by(name = value)
-                product = Addproduct.query.filter_by(category_id=category_id.id)
-                cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first() 
-                if cart is None and quantity <= product.stock:
-                    addcart = Cart(user_id=user_id, product_id=product.id, quantity=quantity)
-                    db.session.add(addcart)
-                    db.session.commit()                        
-                else:
-                    cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
-                    product = Addproduct.query.filter_by(id=product.id).first()
-                    cart_id = cart.id
-                    ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=product.id).first()
-                    ct.quantity = ct.quantity + quantity
-                    if ct.quantity <= product.stock:
-                        db.session.commit()
-                return {'fulfillment' : "The product "+value+" is added to your cart"}
-            except Exception as e:
-                return {'fulfillment' : "The product is not available"}
+    elif queryResult['action']== "item.add":       
+        try:
+            quantity = queryResult['parameters']['quantity']
+            email =  queryResult['parameters']['email']
+            return {'fulfillment' : quantity+email+product}
+            user = user.query.filter_by(email = email).first()
+            user_id = user.id
+            product = queryResult['parameters']['product']
+            
+            category_id = Category.query.filter_by(name = product).first()
+            product = Addproduct.query.filter_by(category_id=category_id.id).first()
+            cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
+            if cart is None and quantity <= product.stock:
+                addcart = Cart(user_id=user_id, product_id=product.id, quantity=quantity)
+                db.session.add(addcart)
+                db.session.commit()  
+                                     
+            else:
+                cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
+                product = Addproduct.query.filter_by(id=product.id).first()
+                cart_id = cart.id
+                ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=product.id).first()
+                ct.quantity = ct.quantity + quantity
+                if ct.quantity <= product.stock:
+                    db.session.commit()
+            return {'fulfillment' : "The product "+value+" is added to your cart"}
+        except Exception as e:
+            return {'fulfillment' : "The product is not available"}
 
     elif queryResult['action'] == "item.remove":
         return {'fulfillment' : "The product "+value+" is removed to your cart"}
@@ -714,12 +718,5 @@ def results(id):
 
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
-    if 'email' in session:
-        user_id = session['_user_id']
-        return make_response(jsonify(results(user_id)))
-    else:
-        req = request.get_json(force=True)
-        queryResult = req.get('queryResult')
-        if queryResult['action'] == "login":
-            return make_response(jsonify({'fulfillment' : "The email id "+value+" is sucessfully logged in our system"}))
+    return make_response(jsonify(results()))
             
