@@ -638,44 +638,71 @@ def clearorder(delivery_id):
 #     if admin is None:
 #         return redirect(url_for('index'))
 #     return render_template('adminprofile.html')
-
-def results():
+#"queryResult": {
+  #  "queryText": "1",
+   # "action": "item.add",
+    #"parameters": {
+   #   "quantity": 1,
+    #  "cart": "",
+   #   "product": "laptop"
+   # },
+def results(id):
     req = request.get_json(force=True)
     queryResult = req.get('queryResult')
-    if 'action' == "product.search":
+    #if 'email' in session:
+    user_id = id
+    if queryResult['action'] == "product.search":
         return {'fulfillmentText': value+" is available to add"}
-    elif 'action' == "cart_check":
+    elif queryResult['action'] == "cart_check":
         return {'fulfillmentText': "visit "+value+" to check items you have added"}
-    elif 'action' == "check_out":   
+    elif queryResult['action'] == "check_out":   
         return {'fulfillmentText': "the checkout amount is "+value}
-    elif 'action' == "delivery.options":
+    elif queryResult['action'] == "delivery.options":
         return {'fulfillmentText': "you can deliver on "+value+" location"}
-    elif 'action' == "freeshipping":
+    elif queryResult['action'] == "freeshipping":
         return {'fulfillment' : "free shipping is for "+value+" amount"}
-    elif 'action' == "gift_card":
+    elif queryResult['action'] == "gift_card":
         return {'fulfillment' : "gift card of "+value+" amount is added on your account"}
-    elif 'action' == "item.add":
-        return {'fulfillment' : "The product "+value+" is added to your cart"}
-    elif 'action' == "item.remove":
-        return {'fulfillment' : "The product "+value+" is removed to your cart"}
-    elif 'action' == "login":
-        return {'fulfillment' : "The email id "+value+" is sucessfully logged in our system"}
-    elif 'action' == "order.cancel":
-        return {'fulfillment' : "Your order "+value+" is successfully cancelled"}
-    elif 'action' == "order.status":
-        return {'fulfillment' : "You ordered "+value+" from our website"}
-    elif 'action' == "order.change":
-        return {'fulfillment' : "Your order "+value+" is successfully edited"}
-    elif 'action' == "special_offers":
-        return {'fulfillment' : "The product "+value+" is on offer for you"}
-
-    actions = ["product.search", "item.add","about_bot","cart.check","check_out",
-                "delivery.options","demo.intent","freeshipping","gift_card",
-                "item.add","item.remove","login","order.cancel","order.status",
-                "order.change","special_offers"]
-    if queryResult['action'] in actions:
+    elif queryResult['action']== "item.add":
         for key,value in queryResult['parameters'].items():
-            return {'fulfillmentText': value+" is available to add"}
+            try:
+                if key == "quantity":
+                    quantity = value
+                if key == "product":
+                    category_id = Category.query.filter_by(name = value)
+                product = Addproduct.query.filter_by(category_id=category_id.id)
+                cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first() 
+                if cart is None and quantity <= product.stock:
+                    addcart = Cart(user_id=user_id, product_id=product.id, quantity=quantity)
+                    db.session.add(addcart)
+                    db.session.commit()                        
+                else:
+                    cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
+                    product = Addproduct.query.filter_by(id=product.id).first()
+                    cart_id = cart.id
+                    ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=product.id).first()
+                    ct.quantity = ct.quantity + quantity
+                    if ct.quantity <= product.stock:
+                        db.session.commit()
+                return {'fulfillment' : "The product "+value+" is added to your cart"}
+            except Exception as e:
+                return {'fulfillment' : "The product is not available"}
+
+    elif queryResult['action'] == "item.remove":
+        return {'fulfillment' : "The product "+value+" is removed to your cart"}
+    elif queryResult['action'] == "order.cancel":
+        return {'fulfillment' : "Your order "+value+" is successfully cancelled"}
+    elif queryResult['action'] == "order.status":
+        return {'fulfillment' : "You ordered "+value+" from our website"}
+    elif queryResult['action'] == "order.change":
+        return {'fulfillment' : "Your order "+value+" is successfully edited"}
+    elif queryResult['action'] == "special_offers":
+        return {'fulfillment' : "The product "+value+" is on offer for you"}
+   # else:
+        #if queryResult['action'] == "login":
+            #return {'fulfillment' : "The email id "+value+" is sucessfully logged in our system"}
+
+    
     # products = Category.query.all()
     # if action == "product.search":
     #     category_id = Category.query.filter_by(name=action)
@@ -687,4 +714,12 @@ def results():
 
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
-    return make_response(jsonify(results()))
+    if 'email' in session:
+        user_id = session['_user_id']
+        return make_response(jsonify(results(user_id)))
+    else:
+        req = request.get_json(force=True)
+        queryResult = req.get('queryResult')
+        if queryResult['action'] == "login":
+            return make_response(jsonify({'fulfillment' : "The email id "+value+" is sucessfully logged in our system"}))
+            
