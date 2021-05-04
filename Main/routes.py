@@ -671,7 +671,7 @@ def results():
         try:
             quantity = queryResult['parameters']['quantity']
             email =  queryResult['parameters']['email']
-            user = user.query.filter_by(email = email).first()
+            user = User.query.filter_by(email = email).first()
             user_id = user.id
             product = queryResult['parameters']['product']            
             category_id = Category.query.filter_by(name = product).first()
@@ -683,7 +683,7 @@ def results():
                 db.session.commit()                                     
             else:
                 cart = Cart.query.filter_by(user_id=user_id, product_id=products.id).first()
-                product = Addproduct.query.filter_by(id=products.id).first()
+                products = Addproduct.query.filter_by(id=cart.product_id).first()
                 cart_id = cart.id
                 ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=products.id).first()
                 ct.quantity = ct.quantity + quantity
