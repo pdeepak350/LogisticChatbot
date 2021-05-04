@@ -702,13 +702,7 @@ def results():
         if queryResult['action'] == "login":
             return {'fulfillment' : "The email id "+value+" is sucessfully logged in our system"}
 
-    actions = ["product.search", "item.add","about_bot","cart.check","check_out",
-                "delivery.options","demo.intent","freeshipping","gift_card",
-                "item.add","item.remove","login","order.cancel","order.status",
-                "order.change","special_offers"]
-    if queryResult['action'] in actions:
-        for key,value in queryResult['parameters'].items():
-            return {'fulfillmentText': value+" is available to add"}
+    
     # products = Category.query.all()
     # if action == "product.search":
     #     category_id = Category.query.filter_by(name=action)
