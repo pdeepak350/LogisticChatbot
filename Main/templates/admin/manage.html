@@ -23,8 +23,7 @@
 			<td>{{loop.index}}</td>
 			<td>{{product.name}}</td>
 			<td>{{product.price}}</td>
-			<td>{{product.discount}}%</td>
-			<td>{{product.brand.name}}</td>
+			<td>{{product.discount}}</td>
 			<td><img src="{{url_for('static',filename='img/'+product.image1)}}" width="50" height="40"></td>
 			<td><a href="{{url_for('updateproduct',id=product.id)}}" class="btn btn-sm btn-outline-info">Edit</a></td>
 			<td><button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#exampleModal-{{product.id}}">
