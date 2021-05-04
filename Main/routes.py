@@ -646,11 +646,11 @@ def clearorder(delivery_id):
     #  "cart": "",
    #   "product": "laptop"
    # },
-def results(id):
+def results():
     req = request.get_json(force=True)
     queryResult = req.get('queryResult')
     #if 'email' in session:
-    user_id = id
+    #user_id = id
     if queryResult['action'] == "product.search":
         return {'fulfillmentText': value+" is available to add"}
     elif queryResult['action'] == "cart_check":
@@ -668,6 +668,9 @@ def results(id):
             try:
                 if key == "quantity":
                     quantity = value
+                if key == "email":
+                    user = user.query.filter_by(email = value)
+                    user_id = user.id
                 if key == "product":
                     category_id = Category.query.filter_by(name = value)
                 product = Addproduct.query.filter_by(category_id=category_id.id)
@@ -714,12 +717,5 @@ def results(id):
 
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
-    if 'email' in session:
-        user_id = session['_user_id']
-        return make_response(jsonify(results(user_id)))
-    else:
-        req = request.get_json(force=True)
-        queryResult = req.get('queryResult')
-        if queryResult['action'] == "login":
-            return make_response(jsonify({'fulfillment' : "The email id "+value+" is sucessfully logged in our system"}))
+    return make_response(jsonify(results()))
             
