@@ -676,8 +676,8 @@ def results():
             product = queryResult['parameters']['product']            
             category_id = Category.query.filter_by(name = product).first()
             products = Addproduct.query.filter_by(category_id=category_id.id).first()
-            cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
-            if cart is None and quantity <= product.stock:
+            cart = Cart.query.filter_by(user_id=user_id, product_id=products.id).first()
+            if cart is None and quantity <= products.stock:
                 addcart = Cart(user_id=user_id, product_id=products.id, quantity=quantity)
                 db.session.add(addcart)
                 db.session.commit()                                     
@@ -687,7 +687,7 @@ def results():
                 cart_id = cart.id
                 ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=products.id).first()
                 ct.quantity = ct.quantity + quantity
-                if ct.quantity <= product.stock:
+                if ct.quantity <= products.stock:
                     db.session.commit()
             return {'fulfillment' : "The product "+ product +" is added to your cart"}
         except Exception as e:
