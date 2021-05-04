@@ -663,33 +663,34 @@ def results():
         return {'fulfillment' : "free shipping is for "+value+" amount"}
     elif queryResult['action'] == "gift_card":
         return {'fulfillment' : "gift card of "+value+" amount is added on your account"}
-    elif queryResult['action']== "item.add":
-        for key,value in queryResult['parameters'].items():
-            try:
-                if key == "quantity":
-                    quantity = value
-                if key == "email":
-                    user = user.query.filter_by(email = value)
-                    user_id = user.id
-                if key == "product":
-                    category_id = Category.query.filter_by(name = value)
-                product = Addproduct.query.filter_by(category_id=category_id.id)
-                cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first() 
-                if cart is None and quantity <= product.stock:
-                    addcart = Cart(user_id=user_id, product_id=product.id, quantity=quantity)
-                    db.session.add(addcart)
-                    db.session.commit()                        
-                else:
-                    cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
-                    product = Addproduct.query.filter_by(id=product.id).first()
-                    cart_id = cart.id
-                    ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=product.id).first()
-                    ct.quantity = ct.quantity + quantity
-                    if ct.quantity <= product.stock:
-                        db.session.commit()
-                return {'fulfillment' : "The product "+value+" is added to your cart"}
-            except Exception as e:
-                return {'fulfillment' : "The product is not available"}
+    elif queryResult['action']== "item.add":       
+        try:
+            quantity = queryResult['parameters']['quantity']
+            email =  queryResult['parameters']['email']
+            user = user.query.filter_by(email = email).first()
+            user_id = user.id
+            product = queryResult['parameters']['product']
+            category_id = Category.query.filter_by(name = product)
+            product = Addproduct.query.filter_by(category_id=category_id.id)
+            cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first() 
+            if cart is None and quantity <= product.stock:
+                addcart = Cart(user_id=user_id, product_id=product.id, quantity=quantity)
+                db.session.add(addcart)
+                db.session.commit()  
+                return {'fulfillment' : "added to null cart"}
+                      
+            else:
+                cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
+                product = Addproduct.query.filter_by(id=product.id).first()
+                cart_id = cart.id
+                ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=product.id).first()
+                ct.quantity = ct.quantity + quantity
+                if ct.quantity <= product.stock:
+                    db.session.commit()
+                return {'fulfillment' : "added to cart"}
+            return {'fulfillment' : "The product "+value+" is added to your cart"}
+        except Exception as e:
+            return {'fulfillment' : "The product is not available"}
 
     elif queryResult['action'] == "item.remove":
         return {'fulfillment' : "The product "+value+" is removed to your cart"}
