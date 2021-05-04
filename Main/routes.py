@@ -642,6 +642,32 @@ def clearorder(delivery_id):
 def results():
     req = request.get_json(force=True)
     queryResult = req.get('queryResult')
+    if 'action' == "product.search":
+        return {'fulfillmentText': value+" is available to add"}
+    elif 'action' == "cart_check":
+        return {'fulfillmentText': "visit "+value+" to check items you have added"}
+    elif 'action' == "check_out":   
+        return {'fulfillmentText': "the checkout amount is "+value}
+    elif 'action' == "delivery.options":
+        return {'fulfillmentText': "you can deliver on "+value+" location"}
+    elif 'action' == "freeshipping":
+        return {'fulfillment' : "free shipping is for "+value+" amount"}
+    elif 'action' == "gift_card":
+        return {'fulfillment' : "gift card of "+value+" amount is added on your account"}
+    elif 'action' == "item.add":
+        return {'fulfillment' : "The product "+value+" is added to your cart"}
+    elif 'action' == "item.remove":
+        return {'fulfillment' : "The product "+value+" is removed to your cart"}
+    elif 'action' == "login":
+        return {'fulfillment' : "The email id "+value+" is sucessfully logged in our system"}
+    elif 'action' == "order.cancel":
+        return {'fulfillment' : "Your order "+value+" is successfully cancelled"}
+    elif 'action' == "order.status":
+        return {'fulfillment' : "You ordered "+value+" from our website"}
+    elif 'action' == "order.change":
+        return {'fulfillment' : "Your order "+value+" is successfully edited"}
+    elif 'action' == "special_offers":
+        return {'fulfillment' : "The product "+value+" is on offer for you"}
 
     actions = ["product.search", "item.add","about_bot","cart.check","check_out",
                 "delivery.options","demo.intent","freeshipping","gift_card",
