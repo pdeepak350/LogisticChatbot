@@ -671,11 +671,11 @@ def results():
         try:
             quantity = queryResult['parameters']['quantity']
             email =  queryResult['parameters']['email']
-            user = User.query.filter_by(email = email).first()
+            user = User.query.filter_by(email=email).first()
             user_id = user.id
             product = queryResult['parameters']['product']            
-            category_id = Category.query.filter_by(name = product).first()
-            products = Addproduct.query.filter_by(category_id=category_id.id).first()
+            # category_id = Category.query.filter_by(name = product).first()
+            products = Addproduct.query.filter_by(name=product).first()
             cart = Cart.query.filter_by(user_id=user_id, product_id=products.id).first()
             if cart is None and quantity <= products.stock:
                 addcart = Cart(user_id=user_id, product_id=products.id, quantity=quantity)
@@ -696,12 +696,12 @@ def results():
     elif queryResult['action'] == "item.remove":
         try:
             email =  queryResult['parameters']['email']
-            user = User.query.filter_by(email = email).first()
+            user = User.query.filter_by(email=email).first()
             user_id = user.id
             product = queryResult['parameters']['product']
-            category_id = Category.query.filter_by(name = product).first()
+            category_id = Category.query.filter_by(name=product).first()
             product = Addproduct.query.filter_by(category_id=category_id.id).first()
-            cart = Cart.query.filter_by(user_id = user_id,product_id =product.id).first()
+            cart = Cart.query.filter_by(user_id=user_id,product_id=product.id).first()
             db.session.delete(cart)
             db.session.commit()
             return {'fulfillment' : "The product "+product+" is removed to your cart"}
@@ -711,12 +711,12 @@ def results():
     elif queryResult['action'] == "order.cancel":
         try:    
             email =  queryResult['parameters']['email']
-            user = User.query.filter_by(email = email).first()
+            user = User.query.filter_by(email=email).first()
             user_id = user.id
             product = queryResult['parameters']['product']
-            category_id = Category.query.filter_by(name = product).first()
+            category_id = Category.query.filter_by(name=product).first()
             product = Addproduct.query.filter_by(category_id=category_id.id).first()
-            dele = Delivery.query.filter_by(user_id = user_id,product_id =product.id).first()
+            dele = Delivery.query.filter_by(user_id=user_id,product_id=product.id).first()
             db.session.delete(dele)
             db.session.commit()
             return {'fulfillment' : "Your order "+product+" is successfully cancelled"}
@@ -726,12 +726,12 @@ def results():
     elif queryResult['action'] == "order.details":
         try:    
             email =  queryResult['parameters']['email']
-            user = User.query.filter_by(email = email).first()
+            user = User.query.filter_by(email=email).first()
             user_id = user.id
             product = queryResult['parameters']['product']
-            category_id = Category.query.filter_by(name = product).first()
+            category_id = Category.query.filter_by(name=product).first()
             product = Addproduct.query.filter_by(category_id=category_id.id).first()
-            dele = Delivery.query.filter_by(user_id = user_id,product_id =product.id).first()
+            dele = Delivery.query.filter_by(user_id=user_id,product_id=product.id).first()
             return {'fulfillment' : "Product name "+product+"\n"+"Delivery estimated  "+dele.Delivery_Est_Date+"\n"+
                                     "Sender name"+dele.Delivery_Sender+"\n"+"Sender address "+dele.From_Address+"\n"+
                                     "Reciver name "+dele.Delivery_Recipient+"\n"+"Shipping address "+dele.To_Address+"\n"}
@@ -741,14 +741,14 @@ def results():
     elif queryResult['action'] == "order.change":
         try:    
             email =  queryResult['parameters']['email']
-            user = User.query.filter_by(email = email).first()
+            user = User.query.filter_by(email=email).first()
             user_id = user.id
             product = queryResult['parameters']['product']
-            category_id = Category.query.filter_by(name = product).first()
+            category_id = Category.query.filter_by(name=product).first()
             product = Addproduct.query.filter_by(category_id=category_id.id).first()
             quantity = queryResult['parameters']['n_quantity']
             if quantity <= product.stock:
-                dele = Delivery.query.filter_by(user_id = user_id,product_id =product.id).first()        
+                dele = Delivery.query.filter_by(user_id=user_id,product_id=product.id).first()        
                 dele.quantity = quantity
                 db.session.commit()
                 return {'fulfillment' : "Your order "+product+" is successfully edited"}
