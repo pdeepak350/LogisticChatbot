@@ -667,19 +667,16 @@ def results():
         try:
             quantity = queryResult['parameters']['quantity']
             email =  queryResult['parameters']['email']
-            return {'fulfillment' : quantity+email+product}
             user = user.query.filter_by(email = email).first()
             user_id = user.id
-            product = queryResult['parameters']['product']
-            
-            category_id = Category.query.filter_by(name = product).first()
+            product = queryResult['parameters']['product']            
+            category_id = Category.query.filter_by(name = product)
             product = Addproduct.query.filter_by(category_id=category_id.id).first()
             cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
             if cart is None and quantity <= product.stock:
                 addcart = Cart(user_id=user_id, product_id=product.id, quantity=quantity)
                 db.session.add(addcart)
-                db.session.commit()  
-                                     
+                db.session.commit()                                     
             else:
                 cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
                 product = Addproduct.query.filter_by(id=product.id).first()
@@ -688,7 +685,7 @@ def results():
                 ct.quantity = ct.quantity + quantity
                 if ct.quantity <= product.stock:
                     db.session.commit()
-            return {'fulfillment' : "The product "+value+" is added to your cart"}
+            return {'fulfillment' : "The product "+ product +" is added to your cart"}
         except Exception as e:
             return {'fulfillment' : "The product is not available"}
 
