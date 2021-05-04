@@ -670,8 +670,8 @@ def results():
             user = user.query.filter_by(email = email).first()
             user_id = user.id
             product = queryResult['parameters']['product']
-            category_id = Category.query.filter_by(name = product)
-            product = Addproduct.query.filter_by(category_id=category_id.id)
+            category_id = Category.query.filter_by(name = product).first()
+            product = Addproduct.query.filter_by(category_id=category_id.id).first()
             cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first() 
             if cart is None and quantity <= product.stock:
                 addcart = Cart(user_id=user_id, product_id=product.id, quantity=quantity)
