@@ -649,8 +649,6 @@ def clearorder(delivery_id):
 def results():
     req = request.get_json(force=True)
     queryResult = req.get('queryResult')
-    #if 'email' in session:
-    #user_id = id
     if queryResult['action'] == "product.search":
         return {'fulfillmentText': value+" is available to add"}
     elif queryResult['action'] == "cart_check":
@@ -667,16 +665,14 @@ def results():
             email =  queryResult['parameters']['email']
             user = user.query.filter_by(email = email).first()
             user_id = user.id
-            product = queryResult['parameters']['product']
-            
-            category_id = Category.query.filter_by(name = product).first()
+            product = queryResult['parameters']['product']            
+            category_id = Category.query.filter_by(name = product)
             product = Addproduct.query.filter_by(category_id=category_id.id).first()
             cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
             if cart is None and quantity <= product.stock:
                 addcart = Cart(user_id=user_id, product_id=product.id, quantity=quantity)
                 db.session.add(addcart)
-                db.session.commit()  
-                                     
+                db.session.commit()                                     
             else:
                 cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
                 product = Addproduct.query.filter_by(id=product.id).first()
@@ -685,11 +681,12 @@ def results():
                 ct.quantity = ct.quantity + quantity
                 if ct.quantity <= product.stock:
                     db.session.commit()
-            return {'fulfillment' : "The product "+value+" is added to your cart"}
+            return {'fulfillment' : "The product "+ product +" is added to your cart"}
         except Exception as e:
             return {'fulfillment' : "The product is not available"}
 
     elif queryResult['action'] == "item.remove":
+<<<<<<< HEAD
         try:
             email =  queryResult['parameters']['email']
             user = user.query.filter_by(email = email).first()
@@ -704,9 +701,13 @@ def results():
         except Exception as e:
             return {'fulfillment' : "Not able to remove the product"}
 
+=======
+        return {'fulfillment' : "The product "+product+" is removed to your cart"}
+>>>>>>> 385cb290526f3a2932a42e51c005a080b071cd3e
     elif queryResult['action'] == "order.cancel":
-        return {'fulfillment' : "Your order "+value+" is successfully cancelled"}
+        return {'fulfillment' : "Your order "+product+" is successfully cancelled"}
     elif queryResult['action'] == "order.status":
+<<<<<<< HEAD
         try:
             email =  queryResult['parameters']['email']
             user = user.query.filter_by(email = email).first()
@@ -716,20 +717,14 @@ def results():
             return {'fulfillment' : "Not able to remove the product"}
 
         return {'fulfillment' : "You ordered "+value+" from our website"}
+=======
+        return {'fulfillment' : "You ordered "+product+" from our website"}
+>>>>>>> 385cb290526f3a2932a42e51c005a080b071cd3e
     elif queryResult['action'] == "order.change":
-        return {'fulfillment' : "Your order "+value+" is successfully edited"}
+        return {'fulfillment' : "Your order "+product+" is successfully edited"}
     elif queryResult['action'] == "special_offers":
-        return {'fulfillment' : "The product "+value+" is on offer for you"}
-   # else:
-        #if queryResult['action'] == "login":
-            #return {'fulfillment' : "The email id "+value+" is sucessfully logged in our system"}
-
-    
-    # products = Category.query.all()
-    # if action == "product.search":
-    #     category_id = Category.query.filter_by(name=action)
-    #     product = Addproduct.query.filter_by(category_id=category_id.id)
-    #     return {'fulfillmentText': product.name + url_for('product',id=product.id)}
+        return {'fulfillment' : "The product "+product+" is on offer for you"}
+        
 
     return {'fulfillmentText':'Default'}
 
