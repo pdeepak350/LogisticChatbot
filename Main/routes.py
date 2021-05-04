@@ -690,7 +690,7 @@ def results():
                 return {'fulfillment' : "added to cart"}
             return {'fulfillment' : "The product "+value+" is added to your cart"}
         except Exception as e:
-            return {'fulfillment' : "The product is not available"}
+            return {'fulfillment' : e}
 
     elif queryResult['action'] == "item.remove":
         return {'fulfillment' : "The product "+value+" is removed to your cart"}
