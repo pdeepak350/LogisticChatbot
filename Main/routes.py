@@ -649,8 +649,6 @@ def clearorder(delivery_id):
 def results():
     req = request.get_json(force=True)
     queryResult = req.get('queryResult')
-    #if 'email' in session:
-    #user_id = id
     if queryResult['action'] == "product.search":
         return {'fulfillmentText': value+" is available to add"}
     elif queryResult['action'] == "cart_check":
@@ -690,25 +688,16 @@ def results():
             return {'fulfillment' : "The product is not available"}
 
     elif queryResult['action'] == "item.remove":
-        return {'fulfillment' : "The product "+value+" is removed to your cart"}
+        return {'fulfillment' : "The product "+product+" is removed to your cart"}
     elif queryResult['action'] == "order.cancel":
-        return {'fulfillment' : "Your order "+value+" is successfully cancelled"}
+        return {'fulfillment' : "Your order "+product+" is successfully cancelled"}
     elif queryResult['action'] == "order.status":
-        return {'fulfillment' : "You ordered "+value+" from our website"}
+        return {'fulfillment' : "You ordered "+product+" from our website"}
     elif queryResult['action'] == "order.change":
-        return {'fulfillment' : "Your order "+value+" is successfully edited"}
+        return {'fulfillment' : "Your order "+product+" is successfully edited"}
     elif queryResult['action'] == "special_offers":
-        return {'fulfillment' : "The product "+value+" is on offer for you"}
-   # else:
-        #if queryResult['action'] == "login":
-            #return {'fulfillment' : "The email id "+value+" is sucessfully logged in our system"}
-
-    
-    # products = Category.query.all()
-    # if action == "product.search":
-    #     category_id = Category.query.filter_by(name=action)
-    #     product = Addproduct.query.filter_by(category_id=category_id.id)
-    #     return {'fulfillmentText': product.name + url_for('product',id=product.id)}
+        return {'fulfillment' : "The product "+product+" is on offer for you"}
+        
 
     return {'fulfillmentText':'Default'}
 
