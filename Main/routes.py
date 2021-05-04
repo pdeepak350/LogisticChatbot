@@ -693,13 +693,67 @@ def results():
             return {'fulfillment' : "The product is not available"}
 
     elif queryResult['action'] == "item.remove":
-        return {'fulfillment' : "The product "+product+" is removed to your cart"}
+        try:
+            email =  queryResult['parameters']['email']
+            user = user.query.filter_by(email = email).first()
+            user_id = user.id
+            product = queryResult['parameters']['product']
+            category_id = Category.query.filter_by(name = product).first()
+            product = Addproduct.query.filter_by(category_id=category_id.id).first()
+            cart = Cart.query.filter_by((user_id = user_id) &(product_id =product.id)).first()
+            db.session.delete(cart)
+            db.session.commit()
+            return {'fulfillment' : "The product "+product+" is removed to your cart"}
+        except Exception as e:
+            return {'fulfillment' : "Not able to remove the product"}
+        
     elif queryResult['action'] == "order.cancel":
-        return {'fulfillment' : "Your order "+product+" is successfully cancelled"}
-    elif queryResult['action'] == "order.status":
-        return {'fulfillment' : "You ordered "+product+" from our website"}
+        try:    
+            email =  queryResult['parameters']['email']
+            user = user.query.filter_by(email = email).first()
+            user_id = user.id
+            product = queryResult['parameters']['product']
+            category_id = Category.query.filter_by(name = product).first()
+            product = Addproduct.query.filter_by(category_id=category_id.id).first()
+            dele = Delivery.query.filter_by((user_id = user_id) &(product_id =product.id)).first()
+            db.session.delete(dele)
+            db.session.commit()
+            return {'fulfillment' : "Your order "+product+" is successfully cancelled"}
+        except Exception as e:
+            return {'fulfillment' : "Not able to cancel the product"}
+
+    elif queryResult['action'] == "order.details":
+        try:    
+            email =  queryResult['parameters']['email']
+            user = user.query.filter_by(email = email).first()
+            user_id = user.id
+            product = queryResult['parameters']['product']
+            category_id = Category.query.filter_by(name = product).first()
+            product = Addproduct.query.filter_by(category_id=category_id.id).first()
+            dele = Delivery.query.filter_by((user_id = user_id) &(product_id =product.id)).first()
+           return {'fulfillment' : "Product name "+product+"\n"+"Delivery estimated  "+dele.Delivery_Est_Date+"\n"+
+                                    "Sender name"+dele.Delivery_Sender+"\n"+"Sender address "+dele.From_Address+"\n"+
+                                    "Reciver name "+dele.Delivery_Recipient+"\n"+"Shipping address "+dele.To_Address+"\n"}
+        except Exception as e:
+            return {'fulfillment' : "Order not found"}
+
     elif queryResult['action'] == "order.change":
-        return {'fulfillment' : "Your order "+product+" is successfully edited"}
+        try:    
+            email =  queryResult['parameters']['email']
+            user = user.query.filter_by(email = email).first()
+            user_id = user.id
+            product = queryResult['parameters']['product']
+            category_id = Category.query.filter_by(name = product).first()
+            product = Addproduct.query.filter_by(category_id=category_id.id).first()
+            quantity = queryResult['parameters']['n_quantity']
+            if quantity <= product.stock:
+                dele = Delivery.query.filter_by((user_id = user_id) &(product_id =product.id)).first()        
+                dele.quantity = quantity
+                db.session.commit()
+                return {'fulfillment' : "Your order "+product+" is successfully edited"}
+        except Exception as e:
+            return {'fulfillment' : "Out of stock - can not update"}
+
     elif queryResult['action'] == "special_offers":
         return {'fulfillment' : "The product "+product+" is on offer for you"}
 
