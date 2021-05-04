@@ -729,28 +729,28 @@ def results():
             category_id = Category.query.filter_by(name = product).first()
             product = Addproduct.query.filter_by(category_id=category_id.id).first()
             dele = Delivery.query.filter_by((user_id = user_id) &(product_id =product.id)).first()
-
-            #confused we have to show all the orders or only one product
-
-            return {'fulfillment' : "You ordered "+product+" from our website"}
-
-    elif queryResult['action'] == "order.change":
-        email =  queryResult['parameters']['email']
-        user = user.query.filter_by(email = email).first()
-        user_id = user.id
-        product = queryResult['parameters']['product']
-        category_id = Category.query.filter_by(name = product).first()
-        product = Addproduct.query.filter_by(category_id=category_id.id).first()
-        quantity = queryResult['parameters']['n_quantity']
-        if quantity <= product.stock:
-            dele = Delivery.query.filter_by((user_id = user_id) &(product_id =product.id)).first()        
-            dele.quantity = quantity
-            db.session.commit()
-            return {'fulfillment' : "Product name "+product+"\n"+"Delivery estimated  "+dele.Delivery_Est_Date+"\n"+
+           return {'fulfillment' : "Product name "+product+"\n"+"Delivery estimated  "+dele.Delivery_Est_Date+"\n"+
                                     "Sender name"+dele.Delivery_Sender+"\n"+"Sender address "+dele.From_Address+"\n"+
                                     "Reciver name "+dele.Delivery_Recipient+"\n"+"Shipping address "+dele.To_Address+"\n"}
-        else:
+        except Exception as e:
             return {'fulfillment' : "Order not found"}
+
+    elif queryResult['action'] == "order.change":
+        try:    
+            email =  queryResult['parameters']['email']
+            user = user.query.filter_by(email = email).first()
+            user_id = user.id
+            product = queryResult['parameters']['product']
+            category_id = Category.query.filter_by(name = product).first()
+            product = Addproduct.query.filter_by(category_id=category_id.id).first()
+            quantity = queryResult['parameters']['n_quantity']
+            if quantity <= product.stock:
+                dele = Delivery.query.filter_by((user_id = user_id) &(product_id =product.id)).first()        
+                dele.quantity = quantity
+                db.session.commit()
+                return {'fulfillment' : "Your order "+product+" is successfully edited"}
+        except Exception as e:
+            return {'fulfillment' : "Out of stock - can not update"}
 
     elif queryResult['action'] == "special_offers":
         return {'fulfillment' : "The product "+product+" is on offer for you"}
