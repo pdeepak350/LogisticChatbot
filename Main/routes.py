@@ -738,23 +738,6 @@ def results():
         except Exception as e:
             return {'fulfillment' : "Order not found"}
 
-    elif queryResult['action'] == "order.change":
-        try:    
-            email =  queryResult['parameters']['email']
-            user = User.query.filter_by(email=email).first()
-            user_id = user.id
-            product = queryResult['parameters']['product']
-            category_id = Category.query.filter_by(name=product).first()
-            product = Addproduct.query.filter_by(category_id=category_id.id).first()
-            quantity = queryResult['parameters']['n_quantity']
-            if quantity <= product.stock:
-                dele = Delivery.query.filter_by(user_id=user_id,product_id=product.id).first()        
-                dele.quantity = quantity
-                db.session.commit()
-                return {'fulfillment' : "Your order "+product+" is successfully edited"}
-        except Exception as e:
-            return {'fulfillment' : "Out of stock - can not update"}
-
     return {'fulfillmentText':'Default'}
 
 
