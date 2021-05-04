@@ -696,7 +696,7 @@ def results():
     elif queryResult['action'] == "item.remove":
         try:
             email =  queryResult['parameters']['email']
-            user = user.query.filter_by(email = email).first()
+            user = User.query.filter_by(email = email).first()
             user_id = user.id
             product = queryResult['parameters']['product']
             category_id = Category.query.filter_by(name = product).first()
@@ -711,7 +711,7 @@ def results():
     elif queryResult['action'] == "order.cancel":
         try:    
             email =  queryResult['parameters']['email']
-            user = user.query.filter_by(email = email).first()
+            user = User.query.filter_by(email = email).first()
             user_id = user.id
             product = queryResult['parameters']['product']
             category_id = Category.query.filter_by(name = product).first()
@@ -726,7 +726,7 @@ def results():
     elif queryResult['action'] == "order.details":
         try:    
             email =  queryResult['parameters']['email']
-            user = user.query.filter_by(email = email).first()
+            user = User.query.filter_by(email = email).first()
             user_id = user.id
             product = queryResult['parameters']['product']
             category_id = Category.query.filter_by(name = product).first()
@@ -741,7 +741,7 @@ def results():
     elif queryResult['action'] == "order.change":
         try:    
             email =  queryResult['parameters']['email']
-            user = user.query.filter_by(email = email).first()
+            user = User.query.filter_by(email = email).first()
             user_id = user.id
             product = queryResult['parameters']['product']
             category_id = Category.query.filter_by(name = product).first()
