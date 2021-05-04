@@ -675,17 +675,17 @@ def results():
             user_id = user.id
             product = queryResult['parameters']['product']            
             category_id = Category.query.filter_by(name = product)
-            product = Addproduct.query.filter_by(category_id=category_id.id).first()
+            products = Addproduct.query.filter_by(category_id=category_id.id).first()
             cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
             if cart is None and quantity <= product.stock:
-                addcart = Cart(user_id=user_id, product_id=product.id, quantity=quantity)
+                addcart = Cart(user_id=user_id, product_id=products.id, quantity=quantity)
                 db.session.add(addcart)
                 db.session.commit()                                     
             else:
-                cart = Cart.query.filter_by(user_id=user_id, product_id=product.id).first()
-                product = Addproduct.query.filter_by(id=product.id).first()
+                cart = Cart.query.filter_by(user_id=user_id, product_id=products.id).first()
+                product = Addproduct.query.filter_by(id=products.id).first()
                 cart_id = cart.id
-                ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=product.id).first()
+                ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=products.id).first()
                 ct.quantity = ct.quantity + quantity
                 if ct.quantity <= product.stock:
                     db.session.commit()
