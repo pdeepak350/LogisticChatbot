@@ -638,14 +638,14 @@ def clearorder(delivery_id):
 #     if admin is None:
 #         return redirect(url_for('index'))
 #     return render_template('adminprofile.html')
-"queryResult": {
-    "queryText": "1",
-    "action": "item.add",
-    "parameters": {
-      "quantity": 1,
-      "cart": "",
-      "product": "laptop"
-    },
+#"queryResult": {
+  #  "queryText": "1",
+   # "action": "item.add",
+    #"parameters": {
+   #   "quantity": 1,
+    #  "cart": "",
+   #   "product": "laptop"
+   # },
 def results():
     req = request.get_json(force=True)
     queryResult = req.get('queryResult')
@@ -699,8 +699,8 @@ def results():
         elif queryResult['action'] == "special_offers":
             return {'fulfillment' : "The product "+value+" is on offer for you"}
     else:
-         queryResult['action'] == "login":
-        return {'fulfillment' : "The email id "+value+" is sucessfully logged in our system"}
+        if queryResult['action'] == "login":
+            return {'fulfillment' : "The email id "+value+" is sucessfully logged in our system"}
 
     actions = ["product.search", "item.add","about_bot","cart.check","check_out",
                 "delivery.options","demo.intent","freeshipping","gift_card",
