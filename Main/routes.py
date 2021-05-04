@@ -605,7 +605,7 @@ def profile():
         # delivery_issued = Delivery.query.filter_by(merchant_id=merchant.id).all()
         return render_template('dashboard.html', user=user, delivery_items=delivery_items, grandtotal=grandtotal, merchant=True)
     elif admin != None:
-
+    
         return render_template('dashboard.html', user=user, delivery_items=delivery_items, grandtotal=grandtotal, admin=True)
     else:
         return render_template('dashboard.html', user=user, delivery_items=delivery_items, grandtotal=grandtotal)
@@ -656,8 +656,8 @@ def results():
     if queryResult['action'] == "product.search":
         product = queryResult['parameters']['product']
         category_id = Category.query.filter_by(name = product).first()
-        product = Addproduct.query.filter_by(category_id=category_id.id).first()
-        prod= url_for('product', id=product.id)
+        product_id = Addproduct.query.filter_by(category_id=category_id.id).first()
+        prod = product(product_id.id)
         return {'fulfillmentText': 'Here is your searched item:{}'.format(prod)}
     # elif queryResult['action'] == "cart_check":
     #     return {'fulfillmentText': "visit "+value+" to check items you have added"}
@@ -737,23 +737,6 @@ def results():
                                     "Reciver name "+dele.Delivery_Recipient+"\n"+"Shipping address "+dele.To_Address+"\n"}
         except Exception as e:
             return {'fulfillment' : "Order not found"}
-
-    elif queryResult['action'] == "order.change":
-        try:    
-            email =  queryResult['parameters']['email']
-            user = User.query.filter_by(email=email).first()
-            user_id = user.id
-            product = queryResult['parameters']['product']
-            category_id = Category.query.filter_by(name=product).first()
-            product = Addproduct.query.filter_by(category_id=category_id.id).first()
-            quantity = queryResult['parameters']['n_quantity']
-            if quantity <= product.stock:
-                dele = Delivery.query.filter_by(user_id=user_id,product_id=product.id).first()        
-                dele.quantity = quantity
-                db.session.commit()
-                return {'fulfillment' : "Your order "+product+" is successfully edited"}
-        except Exception as e:
-            return {'fulfillment' : "Out of stock - can not update"}
 
     return {'fulfillmentText':'Default'}
 
