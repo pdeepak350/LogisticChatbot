@@ -239,6 +239,7 @@ def updateproduct(id):
         product.name= form.name.data
         product.price= form.price.data
         product.discount= form.discount.data
+        product.stock = form.stock.data
         product.category_id= category
         product.desc= form.description.data
         if request.files.get('image1'):
