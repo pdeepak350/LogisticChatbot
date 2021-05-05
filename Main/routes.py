@@ -730,13 +730,18 @@ def results():
         except Exception as e:
             return {'fulfillmentText' : "Not able to cancel the product"}
 
-    elif queryResult['action'] == "order.details" or queryResult['action'] == "order.status":
+    elif queryResult['action'] == "order.status":
         try:    
             email =  queryResult['parameters']['email']
             user = User.query.filter_by(email=email).first()
             user_id = user.id
             dele = Delivery.query.filter_by(user_id=user_id).first()
-            products = Addproduct.query.filter_by(id=dele.product_id).first()
+            if queryResult['parameters']['product']:
+                product = queryResult['parameters']['product']
+                products = Addproduct.query.filter_by(id=dele.product_id).first()
+            elif queryResult['parameters']['trackid']:
+                trackid = queryResult['parameters']['trackid']
+            
             return {'fulfillmentText' : "Product name "+str(product.name)+"\n"+"Delivery estimated  "+str(dele.Delivery_Est_Date)+"\n"+
                                     "Sender name"+str(dele.Delivery_Sender)+"\n"+"Sender address "+str(dele.From_Address)+"\n"+
                                     "Reciver name "+str(dele.Delivery_Recipient)+"\n"+"Shipping address "+str(dele.To_Address)+"\n"}
@@ -748,7 +753,6 @@ def results():
             trackid = queryResult['parameters']['trackid']
             shipment = Shipment.query.filter_by(Delivery_ID=trackid).first()
             delivery = Delivery.query.filter_by(Delivery_ID=trackid).first()
-
             if shipment.Shipment_Note == 'delivered':
                 return {'fulfillmentText': 'Your order for ID: '+str(trackid)+' is already delivered. Thanks for shopping with us.'}
             else:
