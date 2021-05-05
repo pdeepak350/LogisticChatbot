@@ -730,7 +730,7 @@ def results():
         except Exception as e:
             return {'fulfillmentText' : "Not able to cancel the product"}
 
-    elif queryResult['action'] == "order.details":
+    elif queryResult['action'] == "order.details" or queryResult['action'] == "order.status":
         try:    
             email =  queryResult['parameters']['email']
             user = User.query.filter_by(email=email).first()
