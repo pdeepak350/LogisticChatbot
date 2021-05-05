@@ -605,7 +605,7 @@ def profile():
         # delivery_issued = Delivery.query.filter_by(merchant_id=merchant.id).all()
         return render_template('dashboard.html', user=user, delivery_items=delivery_items, grandtotal=grandtotal, merchant=True)
     elif admin != None:
-    
+        
         return render_template('dashboard.html', user=user, delivery_items=delivery_items, grandtotal=grandtotal, admin=True)
     else:
         return render_template('dashboard.html', user=user, delivery_items=delivery_items, grandtotal=grandtotal)
@@ -657,7 +657,7 @@ def results():
         product = queryResult['parameters']['product']
         category_id = Category.query.filter_by(name=product).first()
         product_id = Addproduct.query.filter_by(category_id=category_id.id).first()
-        return {'fulfillmentText': "Before Prod"}
+        #return {'fulfillmentText': "Before Prod"}
         prod = url_for('product',id=product_id.id)
         return {'fulfillmentText': 'Here is your searched item: '+prod}
     # elif queryResult['action'] == "cart_check":
