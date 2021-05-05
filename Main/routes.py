@@ -711,7 +711,7 @@ def results():
             cart = Cart.query.filter_by(user_id=user_id,product_id=products.id).first()
             db.session.delete(cart)
             db.session.commit()
-            return {'fulfillmentText' : "The product "+product+" is removed to your cart"}
+            return {'fulfillmentText' : "The product "+product+" is removed from your cart"}
         except Exception as e:
             return {'fulfillmentText' : "Not able to remove the product"}
         
