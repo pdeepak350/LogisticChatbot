@@ -671,6 +671,7 @@ def results():
     elif queryResult['action']== "item.add":       
         try:
             quantity = queryResult['parameters']['quantity']
+            return {'fulfillment': 'Quantity:' + quantity}
             email =  queryResult['parameters']['email']
             user = User.query.filter_by(email=email).first()
             user_id = user.id
@@ -678,7 +679,7 @@ def results():
             category_id = Category.query.filter_by(name=product).first()
             products = Addproduct.query.filter_by(category_id=category_id).first()
             cart = Cart.query.filter_by(user_id=user_id, product_id=products.id).first()
-            return {'fulfillment': product + quantity + email + products}
+            return {'fulfillment': product}
             if cart is None and quantity <= products.stock:
                 addcart = Cart(user_id=user_id, product_id=products.id, quantity=quantity)
                 db.session.add(addcart)
