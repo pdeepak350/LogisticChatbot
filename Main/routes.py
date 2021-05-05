@@ -657,9 +657,8 @@ def results():
         product = queryResult['parameters']['product']
         category_id = Category.query.filter_by(name=product).first()
         product_id = Addproduct.query.filter_by(category_id=category_id.id).first()
-        #return {'fulfillmentText': "Before Prod"}
         prod = url_for('product',id=product_id.id)
-        return {'fulfillmentText': 'Here is your searched item: '+prod}
+        return {'fulfillmentText': 'Here is your searched item: '+'https://plox/.dev'+prod}
     # elif queryResult['action'] == "cart_check":
     #     return {'fulfillmentText': "visit "+value+" to check items you have added"}
     # elif queryResult['action'] == "check_out":   
