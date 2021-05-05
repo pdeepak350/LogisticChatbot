@@ -736,16 +736,9 @@ def results():
             user = User.query.filter_by(email=email).first()
             user_id = user.id
             dele = Delivery.query.filter_by(user_id=user_id).first()
-            if queryResult['parameters']['product']:
-                product = queryResult['parameters']['product']
-                products = Addproduct.query.filter_by(name=product,id=dele.product_id).first()
-                return {'fulfillmentText' : "Product name "+str(products.name)+"\n"+"Delivery estimated  "+str(dele.Delivery_Est_Date)+"\n"+
-                                    "Sender name"+str(dele.Delivery_Sender)+"\n"+"Sender address "+str(dele.From_Address)+"\n"+
-                                    "Reciver name "+str(dele.Delivery_Recipient)+"\n"+"Shipping address "+str(dele.To_Address)+"\n"}
-            elif queryResult['parameters']['trackid']:
-                trackid = queryResult['parameters']['trackid']
-                products = Addproduct.query.filter_by(id=dele.product_id).first()
-                return {'fulfillmentText' : "Product name "+str(products.name)+"\n"+"Delivery estimated  "+str(dele.Delivery_Est_Date)+"\n"+
+            products = Addproduct.query.filter_by(name=product,id=dele.product_id).first()
+            
+            return {'fulfillmentText' : "Product name "+str(products.name)+"\n"+"Delivery estimated  "+str(dele.Delivery_Est_Date)+"\n"+
                                     "Sender name"+str(dele.Delivery_Sender)+"\n"+"Sender address "+str(dele.From_Address)+"\n"+
                                     "Reciver name "+str(dele.Delivery_Recipient)+"\n"+"Shipping address "+str(dele.To_Address)+"\n"}
         except Exception as e:
