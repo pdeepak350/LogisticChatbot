@@ -671,10 +671,10 @@ def results():
     elif queryResult['action']== "item.add":       
         try:
             quantity = queryResult['parameters']['quantity']
-            return {'fulfillment': 'Quantity:' + quantity}
             email =  queryResult['parameters']['email']
             user = User.query.filter_by(email=email).first()
             user_id = user.id
+            return {'fulfillment': 'user: '+user_id}
             product = queryResult['parameters']['product']            
             category_id = Category.query.filter_by(name=product).first()
             products = Addproduct.query.filter_by(category_id=category_id).first()
