@@ -671,7 +671,6 @@ def results():
     elif queryResult['action']== "item.add":       
         try:
             quantity = queryResult['parameters']['quantity']
-            return {'fulfillment': 'Quantity:' + quantity}
             email =  queryResult['parameters']['email']
             user = User.query.filter_by(email=email).first()
             user_id = user.id
