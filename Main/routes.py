@@ -669,32 +669,27 @@ def results():
     # elif queryResult['action'] == "freeshipping":
     #     return {'fulfillment' : "free shipping is for "+value+" amount"}
     elif queryResult['action']== "item.add":       
-        try:
-            quantity = queryResult['parameters']['quantity']
-            email =  queryResult['parameters']['email']
-            user = User.query.filter_by(email=email).first()
-            user_id = user.id
-            return {'fulfillment': 'user: '+user_id}
-            product = queryResult['parameters']['product']            
-            category_id = Category.query.filter_by(name=product).first()
-            products = Addproduct.query.filter_by(category_id=category_id).first()
+        quantity = int(queryResult['parameters']['quantity'])
+        email =  queryResult['parameters']['email']
+        user = User.query.filter_by(email=email).first()
+        user_id = user.id
+        product = queryResult['parameters']['product']            
+        category = Category.query.filter_by(name=product).first()
+        products = Addproduct.query.filter_by(category_id=category.id).first()
+        cart = Cart.query.filter_by(user_id=user_id, product_id=products.id).first()
+        if cart is None and quantity <= products.stock:
+            addcart = Cart(user_id=user_id, product_id=products.id, quantity=quantity)
+            db.session.add(addcart)
+            db.session.commit()                                     
+        else:
             cart = Cart.query.filter_by(user_id=user_id, product_id=products.id).first()
-            return {'fulfillment': product}
-            if cart is None and quantity <= products.stock:
-                addcart = Cart(user_id=user_id, product_id=products.id, quantity=quantity)
-                db.session.add(addcart)
-                db.session.commit()                                     
-            else:
-                cart = Cart.query.filter_by(user_id=user_id, product_id=products.id).first()
-                products = Addproduct.query.filter_by(id=cart.product_id).first()
-                cart_id = cart.id
-                ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=products.id).first()
-                ct.quantity = ct.quantity + quantity
-                if ct.quantity <= products.stock:
-                    db.session.commit()
-            return {'fulfillment' : "The product "+ product +" is added to your cart"}
-        except Exception as e:
-            return {'fulfillment' : "The product is not available"}
+            products = Addproduct.query.filter_by(id=cart.product_id).first()
+            cart_id = cart.id
+            ct = Cart.query.filter_by(id=cart_id, user_id=user_id, product_id=products.id).first()
+            ct.quantity = ct.quantity + quantity
+            if ct.quantity <= products.stock:
+                db.session.commit()
+        return {'fulfillmentText' : "The product "+ product +" is added to your cart"}
 
     elif queryResult['action'] == "item.remove":
         try:
@@ -702,14 +697,14 @@ def results():
             user = User.query.filter_by(email=email).first()
             user_id = user.id
             product = queryResult['parameters']['product']
-            category_id = Category.query.filter_by(name=product).first()
-            product = Addproduct.query.filter_by(category_id=category_id.id).first()
-            cart = Cart.query.filter_by(user_id=user_id,product_id=product.id).first()
+            category = Category.query.filter_by(name=product).first()
+            products = Addproduct.query.filter_by(category_id=category.id).first()
+            cart = Cart.query.filter_by(user_id=user_id,product_id=products.id).first()
             db.session.delete(cart)
             db.session.commit()
-            return {'fulfillment' : "The product "+product+" is removed to your cart"}
+            return {'fulfillmentText' : "The product "+product+" is removed to your cart"}
         except Exception as e:
-            return {'fulfillment' : "Not able to remove the product"}
+            return {'fulfillmentText' : "Not able to remove the product"}
         
     elif queryResult['action'] == "order.cancel":
         try:    
@@ -718,13 +713,13 @@ def results():
             user_id = user.id
             product = queryResult['parameters']['product']
             category_id = Category.query.filter_by(name=product).first()
-            product = Addproduct.query.filter_by(category_id=category_id.id).first()
-            dele = Delivery.query.filter_by(user_id=user_id,product_id=product.id).first()
+            products = Addproduct.query.filter_by(category_id=category_id.id).first()
+            dele = Delivery.query.filter_by(user_id=user_id,product_id=products.id).first()
             db.session.delete(dele)
             db.session.commit()
-            return {'fulfillment' : "Your order "+product+" is successfully cancelled"}
+            return {'fulfillmentText' : "Your order "+product+" is successfully cancelled"}
         except Exception as e:
-            return {'fulfillment' : "Not able to cancel the product"}
+            return {'fulfillmentText' : "Not able to cancel the product"}
 
     elif queryResult['action'] == "order.details":
         try:    
@@ -733,13 +728,13 @@ def results():
             user_id = user.id
             product = queryResult['parameters']['product']
             category_id = Category.query.filter_by(name=product).first()
-            product = Addproduct.query.filter_by(category_id=category_id.id).first()
-            dele = Delivery.query.filter_by(user_id=user_id,product_id=product.id).first()
-            return {'fulfillment' : "Product name "+product+"\n"+"Delivery estimated  "+dele.Delivery_Est_Date+"\n"+
-                                    "Sender name"+dele.Delivery_Sender+"\n"+"Sender address "+dele.From_Address+"\n"+
-                                    "Reciver name "+dele.Delivery_Recipient+"\n"+"Shipping address "+dele.To_Address+"\n"}
+            products = Addproduct.query.filter_by(category_id=category_id.id).first()
+            dele = Delivery.query.filter_by(user_id=user_id,product_id=products.id).first()
+            return {'fulfillmentText' : "Product name "+str(products.name)+"\n"+"Delivery estimated  "+str(dele.Delivery_Est_Date)+"\n"+
+                                    "Sender name"+str(dele.Delivery_Sender)+"\n"+"Sender address "+str(dele.From_Address)+"\n"+
+                                    "Reciver name "+str(dele.Delivery_Recipient)+"\n"+"Shipping address "+str(dele.To_Address)+"\n"}
         except Exception as e:
-            return {'fulfillment' : "Order not found"}
+            return {'fulfillmentText' : "Order not found"}
 
     return {'fulfillmentText':'Default'}
 
