@@ -4,6 +4,7 @@ from .models import Admin, Cart, Merchant, User, Category, Addproduct, Delivery,
 from .forms import RegistrationForm, LoginForm, Addproducts, tracking
 from Main import app, db, bcrypt, login_manager, photos
 from sqlalchemy.sql import text
+from sqlalchemy import func
 import os
 import random
 import string
@@ -677,6 +678,7 @@ def results():
             category_id = Category.query.filter_by(name=product).first()
             products = Addproduct.query.filter_by(category_id=category_id).first()
             cart = Cart.query.filter_by(user_id=user_id, product_id=products.id).first()
+            return {'fulfillmentText': cart}
             if cart is None and quantity <= products.stock:
                 addcart = Cart(user_id=user_id, product_id=products.id, quantity=quantity)
                 db.session.add(addcart)
