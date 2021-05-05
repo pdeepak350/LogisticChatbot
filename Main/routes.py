@@ -611,6 +611,15 @@ def profile():
     else:
         return render_template('dashboard.html', user=user, delivery_items=delivery_items, grandtotal=grandtotal)
 
+@app.route('/deliveries_issued', methods=['GET', 'POST'])
+def deliveries_issued():
+    if 'email' not in session:
+        flash(f'Please login first','danger')
+        return redirect(url_for('login'))
+    merchant = Merchant.query.filter_by(email=session['email']).first()
+    deliveries = Delivery.query.filter_by(merchant_id=merchant.id).all()
+    return True
+
 @app.route('/cancelorder/<string:delivery_id>', methods=['GET','POST'])
 def clearorder(delivery_id):
     try:
@@ -726,15 +735,26 @@ def results():
             email =  queryResult['parameters']['email']
             user = User.query.filter_by(email=email).first()
             user_id = user.id
-            product = queryResult['parameters']['product']
-            category_id = Category.query.filter_by(name=product).first()
-            products = Addproduct.query.filter_by(category_id=category_id.id).first()
-            dele = Delivery.query.filter_by(user_id=user_id,product_id=products.id).first()
-            return {'fulfillmentText' : "Product name "+str(products.name)+"\n"+"Delivery estimated  "+str(dele.Delivery_Est_Date)+"\n"+
+            dele = Delivery.query.filter_by(user_id=user_id).first()
+            products = Addproduct.query.filter_by(id=dele.product_id).first()
+            return {'fulfillmentText' : "Product name "+str(product.name)+"\n"+"Delivery estimated  "+str(dele.Delivery_Est_Date)+"\n"+
                                     "Sender name"+str(dele.Delivery_Sender)+"\n"+"Sender address "+str(dele.From_Address)+"\n"+
                                     "Reciver name "+str(dele.Delivery_Recipient)+"\n"+"Shipping address "+str(dele.To_Address)+"\n"}
         except Exception as e:
             return {'fulfillmentText' : "Order not found"}
+
+    elif queryResult['action'] == 'track.order':
+        try:
+            trackid = queryResult['parameters']['trackid']
+            shipment = Shipment.query.filter_by(Delivery_ID=trackid).first()
+            delivery = Delivery.query.filter_by(Delivery_ID=trackid).first()
+
+            if shipment.Shipment_Note == 'delivered':
+                return {'fulfillmentText': 'Your order for ID: '+str(trackid)+' is already delivered. Thanks for shopping with us.'}
+            else:
+                return {'fulfillmentText': 'Your order for ID: '+str(trackid)+' will be delivered by '+str(delivery.Delivery_Est_Date)}
+        except Exception as e:
+            return {'fulfillmentText':'We could not find your order.'}
 
     return {'fulfillmentText':'Default'}
 
